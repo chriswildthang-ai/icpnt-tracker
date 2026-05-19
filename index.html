@@ -4,232 +4,213 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ICPNT Case Tracker — BrainSchool</title>
-
-<!-- Firebase SDKs (compat mode — works directly in a plain HTML file) -->
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-
 <style>
 :root {
-  --navy:   #0A1F44;  --blue:   #0057B8;  --blue-m: #2D6BB5;  --blue-l: #4A9FD4;
-  --sky:    #8EC6E6;  --white:  #FFFFFF;  --off:    #F7F9FC;  --muted:  #F0F4FA;
-  --bdr:    #DCE4EF;  --txt:    #1A2E44;  --txt2:   #6A7F99;  --txt3:   #8A9FBA;
-  --txt4:   #AAB8CC;  --grn:    #22C55E;  --amb:    #F59E0B;  --red:    #EF4444;
-  --grn-bg: #DCFCE7;  --grn-tx: #166534;
-  --amb-bg: #FEF3C7;  --amb-tx: #92400E;
-  --red-bg: #FEE2E2;  --red-tx: #991B1B;
-  --serif: Georgia, 'Times New Roman', serif;
-  --sans:  'Segoe UI', system-ui, -apple-system, sans-serif;
-  --r: 8px;  --sh: 0 2px 16px rgba(10,31,68,.09);
+  --navy:#0A1F44; --blue:#0057B8; --blue-m:#2D6BB5; --blue-l:#4A9FD4;
+  --sky:#8EC6E6; --off:#F7F9FC; --muted:#F0F4FA; --bdr:#DCE4EF;
+  --txt:#1A2E44; --txt2:#6A7F99; --txt3:#8A9FBA; --txt4:#AAB8CC;
+  --grn:#22C55E; --amb:#F59E0B; --red:#EF4444;
+  --grn-bg:#DCFCE7; --grn-tx:#166534;
+  --amb-bg:#FEF3C7; --amb-tx:#92400E;
+  --red-bg:#FEE2E2; --red-tx:#991B1B;
+  --serif:Georgia,'Times New Roman',serif;
+  --sans:'Segoe UI',system-ui,-apple-system,sans-serif;
+  --r:8px; --sh:0 2px 16px rgba(10,31,68,.09);
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html   { font-family: var(--sans); font-size: 15px; color: var(--txt); background: var(--off); }
-body   { min-height: 100vh; }
-button { cursor: pointer; border: none; font-family: inherit; font-size: inherit; }
-input, textarea, select { font-family: inherit; font-size: inherit; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--sans);font-size:15px;color:var(--txt);background:var(--off)}
+body{min-height:100vh}
+button{cursor:pointer;border:none;font-family:inherit;font-size:inherit}
+input,textarea,select{font-family:inherit;font-size:inherit}
 
-/* ── Loading ── */
-#loading {
-  position: fixed; inset: 0; background: var(--navy); z-index: 999;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity .5s ease;
+/* Loading */
+#loading{position:fixed;inset:0;background:var(--navy);z-index:999;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .5s ease}
+#loading.out{opacity:0;pointer-events:none}
+.ld-logo{font-family:var(--serif);font-size:46px;color:white;margin-bottom:22px}
+.ld-logo em{font-style:italic;color:var(--sky)}
+.spinner{width:34px;height:34px;border:3px solid rgba(255,255,255,.15);
+  border-top-color:var(--sky);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ld-msg{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
+
+/* Auth */
+#view-auth{min-height:100vh;display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,var(--navy) 0%,#1a4080 100%)}
+#view-auth.hide{display:none}
+.auth-card{background:white;border-radius:16px;padding:44px 40px;
+  width:420px;max-width:94vw;box-shadow:0 24px 80px rgba(0,0,0,.28);
+  animation:slideUp .35s cubic-bezier(.22,1,.36,1)}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.auth-logo{font-family:var(--serif);font-size:40px;line-height:1;margin-bottom:4px}
+.auth-logo em{font-style:italic;color:var(--blue)}
+.auth-logo b{font-weight:700;color:var(--navy)}
+.auth-tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt4);margin-bottom:28px}
+.tab-row{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:24px}
+.tab-btn{flex:1;padding:10px;font-size:13px;font-weight:500;color:var(--txt4);
+  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:.2s}
+.tab-btn.on{color:var(--blue);border-bottom-color:var(--blue)}
+.fld{margin-bottom:16px}
+.fld label{display:block;font-size:11px;font-weight:700;color:var(--txt2);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.fld input{width:100%;padding:11px 13px;border:1.5px solid var(--bdr);
+  border-radius:var(--r);outline:none;background:var(--off);font-size:14px;color:var(--txt);transition:.2s}
+.fld input:focus{border-color:var(--blue);background:white}
+.btn-auth{width:100%;padding:13px;background:var(--blue);color:white;
+  font-weight:600;font-size:14px;border-radius:var(--r);transition:.2s;margin-top:4px;letter-spacing:.02em}
+.btn-auth:hover{background:var(--navy)}
+.btn-auth:disabled{opacity:.5;cursor:not-allowed}
+.auth-err{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
+.auth-ok{display:none;background:var(--grn-bg);color:var(--grn-tx);
+  padding:10px 12px;border-radius:6px;margin-top:8px;font-size:12px}
+
+/* App */
+#view-app{display:none}
+#view-app.show{display:block}
+.topbar{background:var(--navy);height:56px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 26px}
+.tb-brand{font-family:var(--serif);font-size:21px;display:flex;align-items:baseline;gap:10px}
+.tb-brand em{color:var(--sky);font-style:italic}
+.tb-brand b{color:white;font-weight:700}
+.tb-label{font-size:12px;color:rgba(255,255,255,.3)}
+.tb-right{display:flex;align-items:center;gap:12px}
+.tb-user{font-size:12px;color:var(--sky);font-weight:500;max-width:220px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn-seed{font-size:11px;padding:5px 12px;border-radius:4px;background:var(--sky);color:var(--navy);font-weight:600;transition:.2s}
+.btn-seed:hover{background:white}
+.btn-seed:disabled{opacity:.5;cursor:not-allowed}
+.btn-out{font-size:11px;padding:5px 11px;border:1px solid rgba(255,255,255,.18);
+  border-radius:4px;color:rgba(255,255,255,.55);background:none;transition:.2s}
+.btn-out:hover{color:white;border-color:rgba(255,255,255,.4)}
+.nav{background:white;border-bottom:1px solid var(--bdr);display:flex;padding:0 26px}
+.nb{padding:13px 16px;font-size:13px;font-weight:500;color:var(--txt3);
+  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+.nb:hover{color:var(--blue)}
+.nb.on{color:var(--blue);border-bottom-color:var(--blue)}
+.main{padding:26px;max-width:1100px;margin:0 auto;width:100%}
+.pg{display:none}
+.pg.on{display:block;animation:fi .22s ease}
+@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Dashboard */
+.pg-title{font-family:var(--serif);font-size:25px;font-weight:400;color:var(--navy);margin-bottom:4px}
+.pg-sub{font-size:13px;color:var(--txt2);margin-bottom:24px}
+.tot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.tot-card{background:white;border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1px solid var(--bdr)}
+.tot-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px}
+.tot-num{font-family:var(--serif);font-size:46px;line-height:1}
+.tot-den{font-size:15px;color:var(--txt3);font-weight:400}
+.tot-bar{height:6px;background:var(--bdr);border-radius:3px;margin-top:10px;overflow:hidden}
+.tot-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.22,1,.36,1)}
+.sh{font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--txt3);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sh::after{content:'';flex:1;height:1px;background:var(--bdr)}
+.cat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.cc{background:white;border-radius:var(--r);border:1px solid var(--bdr);
+  box-shadow:var(--sh);overflow:hidden;cursor:pointer;transition:.2s}
+.cc:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(10,31,68,.13)}
+.cc-top{padding:13px 15px 10px;border-bottom:1px solid var(--bdr)}
+.cc-rom{font-family:var(--serif);font-size:10px;color:var(--txt4);font-style:italic;margin-bottom:2px}
+.cc-name{font-size:12.5px;font-weight:600;color:var(--navy);margin-bottom:2px;line-height:1.3}
+.cc-desc{font-size:10.5px;color:var(--txt3);line-height:1.4}
+.cc-bot{padding:9px 15px;display:flex;align-items:center;gap:8px}
+.cc-bar{flex:1;height:5px;background:var(--bdr);border-radius:3px;overflow:hidden}
+.cc-fill{height:100%;border-radius:3px;transition:width .8s}
+.cc-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap}
+.bm{background:var(--grn-bg);color:var(--grn-tx)}
+.bp{background:var(--amb-bg);color:var(--amb-tx)}
+.bn{background:var(--red-bg);color:var(--red-tx)}
+
+/* Add Case */
+.aform{background:white;border-radius:var(--r);padding:28px;box-shadow:var(--sh);border:1px solid var(--bdr);max-width:680px}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ff{margin-bottom:20px}
+.ff label{display:block;font-size:11px;font-weight:700;color:var(--txt2);
+  text-transform:uppercase;letter-spacing:.07em;margin-bottom:7px}
+.ff input,.ff textarea{width:100%;padding:10px 13px;border:1.5px solid var(--bdr);
+  border-radius:var(--r);outline:none;transition:.2s;background:var(--off);
+  color:var(--txt);font-size:14px;resize:vertical}
+.ff input:focus,.ff textarea:focus{border-color:var(--blue);background:white}
+.ff textarea{min-height:84px}
+.type-row{display:flex;gap:8px;margin-bottom:20px}
+.tp{flex:1;padding:9px 4px;border:1.5px solid var(--bdr);border-radius:var(--r);
+  text-align:center;cursor:pointer;font-size:12px;font-weight:500;color:var(--txt2);transition:.2s;background:var(--off)}
+.tp:hover{border-color:var(--blue-m)}
+.tp.on{border-color:var(--blue);background:#EFF6FF;color:var(--blue)}
+
+/* ── Category checkboxes — rebuilt correctly ── */
+.csg{display:flex;flex-direction:column;gap:6px;width:100%}
+.co{width:100%;display:flex;flex-direction:row;align-items:flex-start;
+  gap:12px;padding:11px 14px;border:1.5px solid var(--bdr);
+  border-radius:6px;cursor:pointer;transition:border-color .15s,background .15s;
+  background:var(--off)}
+.co:hover{border-color:var(--blue-m);background:white}
+.co.on{border-color:var(--blue);background:#EFF6FF}
+.co-chk{flex-shrink:0;margin-top:3px;width:15px;height:15px;
+  accent-color:var(--blue);cursor:pointer}
+.co-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
+.co-title{font-size:13px;font-weight:600;color:var(--navy);line-height:1.3}
+.co-desc-text{font-size:11px;color:var(--txt2);line-height:1.4}
+
+.btn-save{padding:12px 28px;background:var(--blue);color:white;font-weight:600;
+  font-size:13px;border-radius:var(--r);transition:.2s}
+.btn-save:hover{background:var(--navy)}
+.btn-save:disabled{opacity:.5;cursor:not-allowed}
+.msg-ok{display:none;background:var(--grn-bg);color:var(--grn-tx);
+  padding:10px 14px;border-radius:var(--r);margin-top:14px;font-size:13px;font-weight:500}
+.msg-er{display:none;background:var(--red-bg);color:var(--red-tx);
+  padding:10px 14px;border-radius:var(--r);margin-top:14px;font-size:13px}
+
+/* Case Log */
+.log-tools{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.l-search{flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--bdr);
+  border-radius:var(--r);background:white;font-size:13px;outline:none}
+.l-search:focus{border-color:var(--blue)}
+.l-sel{padding:8px 12px;border:1.5px solid var(--bdr);border-radius:var(--r);background:white;font-size:13px;outline:none}
+.btn-tool{padding:7px 14px;font-size:12px;font-weight:500;border-radius:var(--r);
+  border:1.5px solid var(--bdr);background:white;color:var(--txt2);transition:.2s}
+.btn-tool:hover{border-color:var(--blue);color:var(--blue)}
+.ct{width:100%;border-collapse:collapse;background:white;border-radius:var(--r);
+  box-shadow:var(--sh);overflow:hidden;border:1px solid var(--bdr)}
+.ct th{background:var(--navy);color:rgba(255,255,255,.75);font-size:10px;font-weight:700;
+  letter-spacing:.08em;text-transform:uppercase;padding:11px 14px;text-align:left}
+.ct td{padding:11px 14px;font-size:13px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.ct tr:last-child td{border-bottom:none}
+.ct tr:hover td{background:var(--off)}
+.cpill{display:inline-block;font-size:9px;font-weight:700;padding:2px 7px;
+  border-radius:20px;background:var(--muted);color:var(--blue-m);margin:1px}
+.cnote{font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.35}
+.no-cases{text-align:center;padding:44px;color:var(--txt3);font-size:14px}
+.btn-del{padding:4px 9px;font-size:10px;color:var(--red);background:none;
+  border:1px solid var(--red-bg);border-radius:4px;transition:.2s}
+.btn-del:hover{background:var(--red-bg)}
+
+/* Modal */
+.mov{display:none;position:fixed;inset:0;background:rgba(10,31,68,.5);
+  z-index:200;align-items:center;justify-content:center}
+.mov.on{display:flex}
+.mo{background:white;border-radius:12px;padding:28px;max-width:540px;width:92%;
+  max-height:82vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.mo-title{font-family:var(--serif);font-size:19px;color:var(--navy);margin-bottom:14px}
+.mo-close{float:right;background:none;border:none;font-size:20px;color:var(--txt3);cursor:pointer}
+.mo-close:hover{color:var(--navy)}
+.dr{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr)}
+.dr:last-child{border-bottom:none}
+.dl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  color:var(--txt3);min-width:86px;padding-top:1px;flex-shrink:0}
+.dv{font-size:13px;color:var(--txt)}
+
+@media(max-width:640px){
+  .cat-grid,.tot-grid{grid-template-columns:1fr}
+  .fr2{grid-template-columns:1fr}
+  .type-row{flex-direction:column}
+  .main{padding:14px}
 }
-#loading.out { opacity: 0; pointer-events: none; }
-.ld-logo { font-family: var(--serif); font-size: 46px; color: white; margin-bottom: 22px; }
-.ld-logo em { font-style: italic; color: var(--sky); }
-.spinner { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,.15);
-  border-top-color: var(--sky); border-radius: 50%; animation: spin .8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.ld-msg { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 12px; }
-
-/* ── Auth screen — visible by default ── */
-#view-auth {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: linear-gradient(140deg, var(--navy) 0%, #1a4080 100%);
-}
-#view-auth.hide { display: none; }
-.auth-card {
-  background: white; border-radius: 16px; padding: 44px 40px;
-  width: 420px; max-width: 94vw;
-  box-shadow: 0 24px 80px rgba(0,0,0,.28);
-  animation: slideUp .35s cubic-bezier(.22,1,.36,1);
-}
-@keyframes slideUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
-.auth-logo { font-family: var(--serif); font-size: 40px; line-height: 1; margin-bottom: 4px; }
-.auth-logo em { font-style: italic; color: var(--blue); }
-.auth-logo b  { font-weight: 700; color: var(--navy); }
-.auth-tag  { font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase;
-             color: var(--txt4); margin-bottom: 28px; }
-.tab-row   { display: flex; border-bottom: 2px solid var(--bdr); margin-bottom: 24px; }
-.tab-btn   { flex: 1; padding: 10px; font-size: 13px; font-weight: 500; color: var(--txt4);
-             background: none; border: none; border-bottom: 2px solid transparent;
-             margin-bottom: -2px; cursor: pointer; transition: .2s; }
-.tab-btn.on { color: var(--blue); border-bottom-color: var(--blue); }
-.fld       { margin-bottom: 16px; }
-.fld label { display: block; font-size: 11px; font-weight: 700; color: var(--txt2);
-             text-transform: uppercase; letter-spacing: .07em; margin-bottom: 6px; }
-.fld input { width: 100%; padding: 11px 13px; border: 1.5px solid var(--bdr);
-             border-radius: var(--r); outline: none; background: var(--off);
-             font-size: 14px; color: var(--txt); transition: .2s; }
-.fld input:focus { border-color: var(--blue); background: white; }
-.btn-auth  { width: 100%; padding: 13px; background: var(--blue); color: white;
-             font-weight: 600; font-size: 14px; border-radius: var(--r);
-             transition: .2s; margin-top: 4px; letter-spacing: .02em; }
-.btn-auth:hover    { background: var(--navy); }
-.btn-auth:disabled { opacity: .5; cursor: not-allowed; }
-.auth-err  { font-size: 12px; color: var(--red); margin-top: 8px; min-height: 18px; }
-.auth-ok   { display: none; background: var(--grn-bg); color: var(--grn-tx);
-             padding: 10px 12px; border-radius: 6px; margin-top: 8px; font-size: 12px; }
-
-/* ── App ── */
-#view-app { display: none; }
-#view-app.show { display: block; }
-.topbar    { background: var(--navy); height: 56px; display: flex; align-items: center;
-             justify-content: space-between; padding: 0 26px; }
-.tb-brand  { font-family: var(--serif); font-size: 21px; display: flex; align-items: baseline; gap: 10px; }
-.tb-brand em { color: var(--sky); font-style: italic; }
-.tb-brand b  { color: white; font-weight: 700; }
-.tb-label  { font-size: 12px; color: rgba(255,255,255,.3); }
-.tb-right  { display: flex; align-items: center; gap: 12px; }
-.tb-user   { font-size: 12px; color: var(--sky); font-weight: 500;
-             max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.btn-out   { font-size: 11px; padding: 5px 11px; border: 1px solid rgba(255,255,255,.18);
-             border-radius: 4px; color: rgba(255,255,255,.55); background: none; transition: .2s; }
-.btn-out:hover { color: white; border-color: rgba(255,255,255,.4); }
-.nav       { background: white; border-bottom: 1px solid var(--bdr); display: flex; padding: 0 26px; }
-.nb        { padding: 13px 16px; font-size: 13px; font-weight: 500; color: var(--txt3);
-             background: none; border: none; border-bottom: 2px solid transparent;
-             margin-bottom: -1px; transition: .2s; }
-.nb:hover  { color: var(--blue); }
-.nb.on     { color: var(--blue); border-bottom-color: var(--blue); }
-.main      { padding: 26px; max-width: 1100px; margin: 0 auto; width: 100%; }
-.pg        { display: none; }
-.pg.on     { display: block; animation: fi .22s ease; }
-@keyframes fi { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-
-/* ── Sync indicator ── */
-.sync-badge { display: inline-flex; align-items: center; gap: 5px;
-              font-size: 11px; color: var(--grn-tx); background: var(--grn-bg);
-              padding: 3px 10px; border-radius: 20px; margin-left: 8px; }
-.sync-badge.err { color: var(--red-tx); background: var(--red-bg); }
-
-/* ── Dashboard ── */
-.pg-title  { font-family: var(--serif); font-size: 25px; font-weight: 400; color: var(--navy); margin-bottom: 4px; }
-.pg-sub    { font-size: 13px; color: var(--txt2); margin-bottom: 24px; }
-.tot-grid  { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
-.tot-card  { background: white; border-radius: var(--r); padding: 20px 22px;
-             box-shadow: var(--sh); border: 1px solid var(--bdr); }
-.tot-lbl   { font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
-             color: var(--txt3); margin-bottom: 8px; }
-.tot-num   { font-family: var(--serif); font-size: 46px; line-height: 1; }
-.tot-den   { font-size: 15px; color: var(--txt3); font-weight: 400; }
-.tot-bar   { height: 6px; background: var(--bdr); border-radius: 3px; margin-top: 10px; overflow: hidden; }
-.tot-fill  { height: 100%; border-radius: 3px; transition: width .9s cubic-bezier(.22,1,.36,1); }
-.sh        { font-size: 10px; font-weight: 700; letter-spacing: .15em; text-transform: uppercase;
-             color: var(--txt3); margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
-.sh::after { content: ''; flex: 1; height: 1px; background: var(--bdr); }
-.cat-grid  { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 24px; }
-.cc        { background: white; border-radius: var(--r); border: 1px solid var(--bdr);
-             box-shadow: var(--sh); overflow: hidden; cursor: pointer; transition: .2s; }
-.cc:hover  { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(10,31,68,.13); }
-.cc-top    { padding: 13px 15px 10px; border-bottom: 1px solid var(--bdr); }
-.cc-rom    { font-family: var(--serif); font-size: 10px; color: var(--txt4); font-style: italic; margin-bottom: 2px; }
-.cc-name   { font-size: 12.5px; font-weight: 600; color: var(--navy); margin-bottom: 2px; line-height: 1.3; }
-.cc-desc   { font-size: 10.5px; color: var(--txt3); line-height: 1.4; }
-.cc-bot    { padding: 9px 15px; display: flex; align-items: center; gap: 8px; }
-.cc-bar    { flex: 1; height: 5px; background: var(--bdr); border-radius: 3px; overflow: hidden; }
-.cc-fill   { height: 100%; border-radius: 3px; transition: width .8s; }
-.cc-badge  { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
-.bm { background: var(--grn-bg); color: var(--grn-tx); }
-.bp { background: var(--amb-bg); color: var(--amb-tx); }
-.bn { background: var(--red-bg); color: var(--red-tx); }
-
-/* ── Add case ── */
-.aform     { background: white; border-radius: var(--r); padding: 28px; box-shadow: var(--sh);
-             border: 1px solid var(--bdr); max-width: 720px; }
-.fr2       { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.ff        { margin-bottom: 20px; }
-.ff label  { display: block; font-size: 11px; font-weight: 700; color: var(--txt2);
-             text-transform: uppercase; letter-spacing: .07em; margin-bottom: 7px; }
-.ff input, .ff textarea {
-  width: 100%; padding: 10px 13px; border: 1.5px solid var(--bdr);
-  border-radius: var(--r); outline: none; transition: .2s;
-  background: var(--off); color: var(--txt); font-size: 14px; resize: vertical; }
-.ff input:focus, .ff textarea:focus { border-color: var(--blue); background: white; }
-.ff textarea { min-height: 84px; }
-.type-row  { display: flex; gap: 8px; margin-bottom: 20px; }
-.tp        { flex: 1; padding: 9px 4px; border: 1.5px solid var(--bdr); border-radius: var(--r);
-             text-align: center; cursor: pointer; font-size: 12px; font-weight: 500;
-             color: var(--txt2); transition: .2s; background: var(--off); }
-.tp:hover  { border-color: var(--blue-m); }
-.tp.on     { border-color: var(--blue); background: #EFF6FF; color: var(--blue); }
-.csg       { display: grid; grid-template-columns: 1fr; gap: 6px; }
-.co        { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px;
-             border: 1.5px solid var(--bdr); border-radius: 6px; cursor: pointer;
-             transition: .2s; background: var(--off); min-width: 0; overflow: hidden; }
-.co:hover  { border-color: var(--blue-m); background: white; }
-.co.on     { border-color: var(--blue); background: #EFF6FF; }
-.co input  { margin-top: 2px; accent-color: var(--blue); flex-shrink: 0; }
-.co-lbl strong { display: block; font-size: 12.5px; color: var(--navy); margin-bottom: 2px; }
-.co-lbl    { font-size: 11px; color: var(--txt2); line-height: 1.4; }
-.btn-save  { padding: 12px 28px; background: var(--blue); color: white; font-weight: 600;
-             font-size: 13px; border-radius: var(--r); transition: .2s; }
-.btn-save:hover { background: var(--navy); }
-.btn-save:disabled { opacity: .5; cursor: not-allowed; }
-.msg-ok    { display: none; background: var(--grn-bg); color: var(--grn-tx);
-             padding: 10px 14px; border-radius: var(--r); margin-top: 14px; font-size: 13px; font-weight: 500; }
-.msg-er    { display: none; background: var(--red-bg); color: var(--red-tx);
-             padding: 10px 14px; border-radius: var(--r); margin-top: 14px; font-size: 13px; }
-
-/* ── Case log ── */
-.log-tools  { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
-.l-search   { flex: 1; min-width: 180px; padding: 8px 12px; border: 1.5px solid var(--bdr);
-              border-radius: var(--r); background: white; font-size: 13px; outline: none; }
-.l-search:focus { border-color: var(--blue); }
-.l-sel      { padding: 8px 12px; border: 1.5px solid var(--bdr); border-radius: var(--r);
-              background: white; font-size: 13px; outline: none; }
-.btn-tool   { padding: 7px 14px; font-size: 12px; font-weight: 500; border-radius: var(--r);
-              border: 1.5px solid var(--bdr); background: white; color: var(--txt2); transition: .2s; }
-.btn-tool:hover { border-color: var(--blue); color: var(--blue); }
-.ct         { width: 100%; border-collapse: collapse; background: white; border-radius: var(--r);
-              box-shadow: var(--sh); overflow: hidden; border: 1px solid var(--bdr); }
-.ct th      { background: var(--navy); color: rgba(255,255,255,.75); font-size: 10px; font-weight: 700;
-              letter-spacing: .08em; text-transform: uppercase; padding: 11px 14px; text-align: left; }
-.ct td      { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid var(--bdr); vertical-align: top; }
-.ct tr:last-child td { border-bottom: none; }
-.ct tr:hover td { background: var(--off); }
-.cpill      { display: inline-block; font-size: 9px; font-weight: 700; padding: 2px 7px;
-              border-radius: 20px; background: var(--muted); color: var(--blue-m); margin: 1px; }
-.cnote      { font-size: 11px; color: var(--txt3); margin-top: 2px; line-height: 1.35; }
-.no-cases   { text-align: center; padding: 44px; color: var(--txt3); font-size: 14px; }
-.btn-del    { padding: 4px 9px; font-size: 10px; color: var(--red); background: none;
-              border: 1px solid var(--red-bg); border-radius: 4px; transition: .2s; }
-.btn-del:hover { background: var(--red-bg); }
-
-/* ── Modal ── */
-.mov        { display: none; position: fixed; inset: 0; background: rgba(10,31,68,.5);
-              z-index: 200; align-items: center; justify-content: center; }
-.mov.on     { display: flex; }
-.mo         { background: white; border-radius: 12px; padding: 28px; max-width: 540px;
-              width: 92%; max-height: 82vh; overflow-y: auto;
-              box-shadow: 0 24px 80px rgba(0,0,0,.3); }
-.mo-title   { font-family: var(--serif); font-size: 19px; color: var(--navy); margin-bottom: 14px; }
-.mo-close   { float: right; background: none; border: none; font-size: 20px; color: var(--txt3); cursor: pointer; }
-.mo-close:hover { color: var(--navy); }
-.dr         { display: flex; gap: 8px; padding: 7px 0; border-bottom: 1px solid var(--bdr); }
-.dr:last-child { border-bottom: none; }
-.dl         { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
-              color: var(--txt3); min-width: 86px; padding-top: 1px; flex-shrink: 0; }
-.dv         { font-size: 13px; color: var(--txt); }
-
-@media (max-width: 640px) {
-  .cat-grid, .tot-grid { grid-template-columns: 1fr; }
-  .fr2, .csg { grid-template-columns: 1fr; }
-  .type-row  { flex-direction: column; }
-  .main      { padding: 14px; }
-}
-@media (max-width: 420px) { .cat-grid { grid-template-columns: 1fr; } }
+@media(max-width:420px){.cat-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -238,10 +219,10 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 <div id="loading">
   <div class="ld-logo"><em>Brain</em>School</div>
   <div class="spinner"></div>
-  <div class="ld-msg" id="ld-msg">Connecting…</div>
+  <div class="ld-msg">Connecting to Firebase…</div>
 </div>
 
-<!-- Auth (shown while not logged in) -->
+<!-- Auth -->
 <div id="view-auth">
   <div class="auth-card">
     <div class="auth-logo"><em>Brain</em><b>School</b></div>
@@ -250,8 +231,6 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
       <button class="tab-btn on" id="tab-in" onclick="setTab('in')">Sign In</button>
       <button class="tab-btn"    id="tab-up" onclick="setTab('up')">Register</button>
     </div>
-
-    <!-- Sign in -->
     <div id="pane-in">
       <div class="fld"><label>Email</label>
         <input id="in-email" type="email" placeholder="your@email.com" autocomplete="email"
@@ -262,8 +241,6 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
       <div class="auth-err" id="in-err"></div>
       <button class="btn-auth" id="btn-in" onclick="doLogin()">Sign In →</button>
     </div>
-
-    <!-- Register -->
     <div id="pane-up" style="display:none">
       <div class="fld"><label>Full Name</label>
         <input id="up-name" type="text" placeholder="Dr Jane Smith"></div>
@@ -281,9 +258,13 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 <!-- App -->
 <div id="view-app">
   <div class="topbar">
-    <div class="tb-brand"><span><em>Brain</em><b>School</b></span><span class="tb-label">ICPNT Case Tracker</span></div>
+    <div class="tb-brand">
+      <span><em>Brain</em><b>School</b></span>
+      <span class="tb-label">ICPNT Case Tracker</span>
+    </div>
     <div class="tb-right">
       <div class="tb-user" id="tb-user"></div>
+      <button class="btn-seed" id="btn-seed" onclick="seedMyData()">⬆ Load My Cases</button>
       <button class="btn-out" onclick="doLogout()">Sign Out</button>
     </div>
   </div>
@@ -333,9 +314,11 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
           </div>
         </div>
         <div class="ff"><label>ICPNT Category (tick all that apply)</label>
-          <div class="csg" id="csg"></div></div>
+          <div class="csg" id="csg"></div>
+        </div>
         <div class="ff"><label>Case Notes</label>
-          <textarea id="nn" placeholder="Patient details, anaesthetic considerations, key learning points…"></textarea></div>
+          <textarea id="nn" placeholder="Patient details, anaesthetic considerations, key learning points…"></textarea>
+        </div>
         <button class="btn-save" id="btn-save" onclick="submitCase()">Save Case →</button>
         <div class="msg-ok" id="msg-ok">✓ Case saved to Firebase.</div>
         <div class="msg-er" id="msg-er"></div>
@@ -370,10 +353,13 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
         </select>
         <button class="btn-tool" onclick="exportJSON()">⬇ Export</button>
         <label class="btn-tool" style="cursor:pointer">⬆ Import
-          <input type="file" accept=".json" style="display:none" onchange="importJSON(event)"></label>
+          <input type="file" accept=".json" style="display:none" onchange="importJSON(event)">
+        </label>
       </div>
       <table class="ct">
-        <thead><tr><th>Date</th><th>Procedure</th><th>Categories</th><th>Type</th><th></th></tr></thead>
+        <thead><tr>
+          <th>Date</th><th>Procedure</th><th>Categories</th><th>Type</th><th></th>
+        </tr></thead>
         <tbody id="ctbody"></tbody>
       </table>
     </div>
@@ -391,93 +377,53 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════════════
-// ⚙️  STEP 1 — Paste your Firebase config here
-//     Get this from: Firebase Console → Project Settings → Your apps
-// ════════════════════════════════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyBN0iqwZSrQxYpatYa9kdtRAdBB6jXn3q8",
-  authDomain: "icpnt-tracker.firebaseapp.com",
-  projectId: "icpnt-tracker",
-  storageBucket: "icpnt-tracker.firebasestorage.app",
+// ── Firebase ──────────────────────────────────────────────────
+firebase.initializeApp({
+  apiKey:            "AIzaSyBN0iqwZSrQxYpatYa9kdtRAdBB6jXn3q8",
+  authDomain:        "icpnt-tracker.firebaseapp.com",
+  projectId:         "icpnt-tracker",
+  storageBucket:     "icpnt-tracker.firebasestorage.app",
   messagingSenderId: "784075594492",
-  appId: "1:784075594492:web:e8265cec6bc0c8e2149579"
-};
-// ════════════════════════════════════════════════════════════════
-
-// ── ICPNT Categories ──────────────────────────────────────────
-const CATS = [
-  {id:'i',                 lbl:'Awake Craniotomy & DBS',         desc:'Speech, motor & sensory mapping; max 2 DBS', req:5},
-  {id:'ii',                lbl:'Seizure Focus / Epilepsy',        desc:'Grid placement or seizure focus excision',   req:5},
-  {id:'iii',               lbl:'Intracranial Vascular',            desc:'Aneurysm, AVM, stroke revascularisation',    req:10},
-  {id:'iv',                lbl:'Craniotomy for Tumour',            desc:'Intra & extraaxial, supra & infratentorial', req:10},
-  {id:'v',                 lbl:'Emergency / Trauma',               desc:'Intracranial or spinal emergencies',         req:5},
-  {id:'vi',                lbl:'Spinal Cord — Tumour/Vascular',    desc:'Intramedullary tumour or spinal vascular',   req:5},
-  {id:'vii',               lbl:'Structural Spine Surgery',         desc:'Cervical, thoracic & lumbar instrumentation',req:25},
-  {id:'viii',              lbl:'CSF Shunt Procedures',             desc:'VP/VA shunt, EVD, endoscopic ventriculostomy',req:5},
-  {id:'ix',                lbl:'IONM Observation',                 desc:'Interaction with neurologist / IONM professional',req:null},
-  {id:'general_craniotomy',lbl:'Other Craniotomy',                 desc:'Counts toward craniotomy total only',        req:null},
-  {id:'general_spine',     lbl:'Other Spine',                      desc:'Counts toward spine total only',             req:null},
-];
-
-// ── Demo data (christhang) — used with the Import button ──────
-const DEMO_CASES = [
-  {date:'2026-02-03',procedure:'Awake Craniotomy — Deep Brain Surgery',caseType:'craniotomy',categories:['i'],notes:'DBS #1. Patient on rasagiline — caution sympathomimetics.'},
-  {date:'2026-02-03',procedure:'Cranioplasty (Autologous)',caseType:'craniotomy',categories:['general_craniotomy'],notes:'Autologous cranioplasty.'},
-  {date:'2026-02-04',procedure:'Lumbar Laminectomy Multi-level + Fusion',caseType:'spine',categories:['vii'],notes:'Spinal laminectomy multi-level and fusion, lumbar.'},
-  {date:'2026-02-13',procedure:'Craniotomy — Frontal Mass (Tumour)',caseType:'craniotomy',categories:['iv'],notes:'Craniotomy for frontal mass. Cervical laminectomy C3-C5 also same day.'},
-  {date:'2026-02-13',procedure:'Cervical Laminectomy C3–C5',caseType:'spine',categories:['vii'],notes:'Cervical laminectomy C3-C5.'},
-  {date:'2026-02-17',procedure:'ACDF',caseType:'spine',categories:['vii'],notes:'Anterior cervical discectomy and fusion.'},
-  {date:'2026-02-17',procedure:'Posterior Decompression — Thoracic Epidural Abscess',caseType:'spine',categories:['v'],notes:'Emergency posterior decompression of thoracic epidural abscess.'},
-  {date:'2026-02-18',procedure:'Craniotomy + Clipping — R MCA Aneurysm (8.1mm) + ACoM (2.8mm)',caseType:'craniotomy',categories:['iii','ix'],notes:'56F. Early emphysema. 40kg. IONM intraop. Mild PONV prev. Pins, coronal approach, head rotated. FHx aneurysms.'},
-  {date:'2026-02-18',procedure:'Resection — Haemorrhagic Intracranial Lesion (Melanoma Met)',caseType:'craniotomy',categories:['iv'],notes:'69M. L hemiplegia/drift, L facial droop. Melanoma met R frontal. Asbestosis, depression, tramadol.'},
-  {date:'2026-02-18',procedure:'Cranioplasty (Synthetic) — Post-TBI',caseType:'craniotomy',categories:['general_craniotomy'],notes:'17M. Severe TBI skateboard fall 50-60 km/hr. SDH, SAH, bifrontal contusion. Trachy decannulated. PEG fed. Seizure Keppra. Mayfield.'},
-  {date:'2026-03-09',procedure:'Burr Hole — Intracranial Bleed',caseType:'craniotomy',categories:['v'],notes:'Burr hole for intracranial bleed.'},
-  {date:'2026-03-11',procedure:'Posterior Interbody Fusion L3/L4',caseType:'spine',categories:['vii'],notes:'82kg. Metabolic + alcoholic CLD, prolonged APTT LAC+ve, pancytopenia. Targin + oxycodone. Olanzapine, amitriptyline. PONV prev. Ketamine +/- PCA, clonidine.'},
-  {date:'2026-03-11',procedure:'Lumbar Laminectomy L4/L5',caseType:'spine',categories:['vii'],notes:'BMI 41. L4/5 stenosis, neurogenic claudication. Tapentadol 250mg + pregabalin 75mg BD. RA. GORD silent reflux. 80-100 PYH smoker.'},
-  {date:'2026-03-19',procedure:'Craniotomy + Resection — R Parietooccipital Extraaxial Mass',caseType:'craniotomy',categories:['iv'],notes:'49M. Invasive extraaxial mass 1.2cm + 8mm. Suprasellar extension. OSA non-compliant CPAP. BMI 33. Sitting upright in pins. 3L intraop blood loss.'},
-  {date:'2026-03-21',procedure:'Resection — Parietal Brain Tumour',caseType:'craniotomy',categories:['iv'],notes:'Resection parietal brain tumour.'},
-  {date:'2026-03-21',procedure:'Stereotactic Aspiration — Brain Abscess',caseType:'craniotomy',categories:['v'],notes:'Aspiration brain abscess. Stealth neuronavigation, pins.'},
-  {date:'2026-03-21',procedure:'Lumbar Spinal Case (Prone)',caseType:'spine',categories:['vii'],notes:'Lumbar spinal surgery, prone.'},
-  {date:'2026-03-22',procedure:'Spinal Surgery — Unstable Lumbar Fracture',caseType:'spine',categories:['v'],notes:'Emergency spinal surgery for unstable lumbar fracture, prone.'},
-  {date:'2026-03-22',procedure:'Cauda Equina / Spinal Stenosis Decompression',caseType:'spine',categories:['vii'],notes:'Suspected cauda equina / spinal cord stenosis, prone.'},
-  {date:'2026-03-23',procedure:'ACDF (59F)',caseType:'spine',categories:['vii'],notes:'59F. Baclofen OD 2018. Chronic back pain, HTN.'},
-  {date:'2026-03-23',procedure:'ACDF C5/C6 (67F)',caseType:'spine',categories:['vii'],notes:'67F. C6 radiculopathy. Follicular lymphoma grade 2. CKD Cr130. Previous L4/5 fusion. Reinforced tube, arterial line.'},
-  {date:'2026-03-23',procedure:'C7 Cervical Radiculopathy',caseType:'spine',categories:['vii'],notes:'27F. C7 radiculopathy. Pregnant (early). Chronic migraines, previous CSVT. Decreased sensation and motor R arm. Abdominal shielding.'},
-  {date:'2026-03-30',procedure:'Cranioplasty Left Autologous (Post-Decompressive Craniectomy)',caseType:'craniotomy',categories:['general_craniotomy'],notes:'40F. Malignant MCA syndrome post partum. Left decompressive craniectomy. Verbal apraxia and aphasia. PE thrombectomy, apixaban. Previous awareness (LSCS).'},
-  {date:'2026-03-30',procedure:'Decompression Trigeminal Nerve (MVD)',caseType:'craniotomy',categories:['general_craniotomy'],notes:'77F TN. Mild COPD. Lamotrigine, carbamazepine, gabapentin. Confirm with ICPNT if MVD qualifies as vascular category.'},
-  {date:'2026-04-25',procedure:'Burr Hole — Acute Traumatic SDH #1',caseType:'craniotomy',categories:['v'],notes:'Acute trauma TBI. Uncertain neuroprognosis.'},
-  {date:'2026-04-25',procedure:'Burr Hole — Acute Traumatic SDH #2',caseType:'craniotomy',categories:['v'],notes:'Second burr hole acute traumatic SDH same date.'},
-  {date:'2026-04-28',procedure:'DBS Stimulator Implantation — Awake Craniotomy',caseType:'craniotomy',categories:['i'],notes:'60F. Parkinson\'s disease. 62kg. HTN, anxiety. Mirtazapine. Previous nephrectomy. Rasagiline — caution sympathomimetics. DBS #2.'},
-  {date:'2026-04-28',procedure:'Craniotomy + Resection — L Mixed Solid-Cystic Meningioma',caseType:'craniotomy',categories:['iv'],notes:'74F. Convexity meningioma. 12mm midline shift. Hb133, WCC18.5, Plt427, GFR60. G+H required. 67kg.'},
-  {date:'2026-05-06',procedure:'Translabyrinthine Resection — Vestibular Schwannoma',caseType:'craniotomy',categories:['iv'],notes:'Translabyrinthine approach. Pins head rotated. Significant PONV risk. 10-hour case, early start. Antiemetics ++.'},
-  {date:'2026-05-07',procedure:'Craniotomy + Decompression — Acute-on-Chronic SDH',caseType:'craniotomy',categories:['v'],notes:'Craniotomy and decompression of acute-on-chronic subdural haematoma.'},
-  {date:'2026-05-07',procedure:'External Ventricular Drain (EVD)',caseType:'craniotomy',categories:['viii'],notes:'EVD insertion.'},
-  {date:'2026-05-11',procedure:'Aneurysmal Clipping — MCA Bifurcation Aneurysm',caseType:'craniotomy',categories:['iii','ix'],notes:'MCA bifurcation aneurysm. Subclavian central line. Thiopentone, adenosine, EEG, ICG. IONM documented.'},
-  {date:'2026-05-11',procedure:'Autologous Cranioplasty (Post-SAH)',caseType:'craniotomy',categories:['general_craniotomy'],notes:'Autologous cranioplasty after SAH with decompressive craniectomy.'},
-  {date:'2026-05-12',procedure:'ACDF Revision',caseType:'spine',categories:['vii'],notes:'ACDF revision.'},
-  {date:'2026-05-12',procedure:'Single-Level Discectomy — Cauda Equina Syndrome',caseType:'spine',categories:['v'],notes:'Emergency single-level discectomy for cauda equina syndrome.'},
-];
-
-// ── Firebase init ─────────────────────────────────────────────
-firebase.initializeApp(firebaseConfig);
+  appId:             "1:784075594492:web:e8265cec6bc0c8e2149579"
+});
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-// ── App state ─────────────────────────────────────────────────
+// ── Categories ────────────────────────────────────────────────
+const CATS = [
+  {id:'i',                 lbl:'Awake Craniotomy & DBS',                              desc:'Speech, motor & sensory mapping; max 2 DBS',                 req:5},
+  {id:'ii',                lbl:'Seizure Focus / Epilepsy',                             desc:'Grid placement or seizure focus excision',                    req:5},
+  {id:'iii',               lbl:'Intracranial Vascular',                                desc:'Aneurysm, AVM, stroke revascularisation',                     req:10},
+  {id:'iv',                lbl:'Craniotomy for Tumour',                                desc:'Intra & extraaxial, supra & infratentorial',                  req:10},
+  {id:'v',                 lbl:'Emergency / Trauma',                                   desc:'Intracranial or spinal emergencies',                          req:5},
+  {id:'vi',                lbl:'Spinal Cord — Tumour/Vascular',                        desc:'Intramedullary tumour or spinal vascular',                    req:5},
+  {id:'vii',               lbl:'Structural Spine Surgery',                             desc:'Cervical, thoracic & lumbar instrumentation',                 req:25},
+  {id:'viii',              lbl:'CSF Shunt Procedures',                                 desc:'VP/VA shunt, EVD, endoscopic ventriculostomy',                req:5},
+  {id:'ix',                lbl:'IONM Observation',                                     desc:'Interaction with neurologist or certified IONM professional', req:null},
+  {id:'general_craniotomy',lbl:'Other Craniotomy',                                     desc:'Counts toward craniotomy total only',                         req:null},
+  {id:'general_spine',     lbl:'Other Spine',                                          desc:'Counts toward spine total only',                              req:null},
+];
+
+// ── State ─────────────────────────────────────────────────────
 let currentUser = null;
 let allCases    = [];
 let selType     = 'craniotomy';
 let selCats     = new Set();
 
-// ════════════════════════════════════════════════════════════════
-// AUTH
-// ════════════════════════════════════════════════════════════════
+// ── Helpers ───────────────────────────────────────────────────
+const g       = id => document.getElementById(id);
+const pct     = (n,d) => Math.min(Math.round(n/d*100),100);
+const fmtDate = d => new Date(d+'T12:00:00').toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+const esc     = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const setBtn  = (id,dis,txt) => { const b=g(id); b.disabled=dis; b.textContent=txt; };
+const fadeOut = id => { const el=g(id); el.classList.add('out'); setTimeout(()=>el.style.display='none',520); };
+
+// ── Auth ──────────────────────────────────────────────────────
 function setTab(t) {
-  document.getElementById('tab-in').classList.toggle('on', t === 'in');
-  document.getElementById('tab-up').classList.toggle('on', t === 'up');
-  document.getElementById('pane-in').style.display = t === 'in' ? 'block' : 'none';
-  document.getElementById('pane-up').style.display = t === 'up' ? 'block' : 'none';
+  g('tab-in').classList.toggle('on',t==='in');
+  g('tab-up').classList.toggle('on',t==='up');
+  g('pane-in').style.display = t==='in'?'block':'none';
+  g('pane-up').style.display = t==='up'?'block':'none';
 }
 
 async function doLogin() {
@@ -485,13 +431,13 @@ async function doLogin() {
   const pass  = g('in-pass').value;
   const errEl = g('in-err');
   errEl.textContent = '';
-  if (!email || !pass) { errEl.textContent = 'Please enter your email and password.'; return; }
-  setBtn('btn-in', true, 'Signing in…');
+  if (!email||!pass) { errEl.textContent='Please enter your email and password.'; return; }
+  setBtn('btn-in',true,'Signing in…');
   try {
-    await auth.signInWithEmailAndPassword(email, pass);
+    await auth.signInWithEmailAndPassword(email,pass);
   } catch(e) {
-    errEl.textContent = friendlyError(e.code);
-    setBtn('btn-in', false, 'Sign In →');
+    errEl.textContent = friendlyErr(e.code);
+    setBtn('btn-in',false,'Sign In →');
   }
 }
 
@@ -501,78 +447,69 @@ async function doRegister() {
   const pass  = g('up-pass').value;
   const errEl = g('up-err');
   const okEl  = g('up-ok');
-  errEl.textContent = ''; okEl.style.display = 'none';
-  if (!name || !email || !pass) { errEl.textContent = 'All fields are required.'; return; }
-  if (pass.length < 6)          { errEl.textContent = 'Password must be at least 6 characters.'; return; }
-  setBtn('btn-up', true, 'Creating account…');
+  errEl.textContent=''; okEl.style.display='none';
+  if (!name||!email||!pass) { errEl.textContent='All fields are required.'; return; }
+  if (pass.length<6)        { errEl.textContent='Password must be at least 6 characters.'; return; }
+  setBtn('btn-up',true,'Creating account…');
   try {
-    const cred = await auth.createUserWithEmailAndPassword(email, pass);
-    await cred.user.updateProfile({ displayName: name });
-    okEl.style.display = 'block';
-    errEl.textContent  = '';
-    setTimeout(() => setTab('in'), 1800);
+    const cred = await auth.createUserWithEmailAndPassword(email,pass);
+    await cred.user.updateProfile({displayName:name});
+    okEl.style.display='block';
+    setTimeout(()=>setTab('in'),1800);
   } catch(e) {
-    errEl.textContent = friendlyError(e.code);
+    errEl.textContent = friendlyErr(e.code);
   }
-  setBtn('btn-up', false, 'Create Account →');
+  setBtn('btn-up',false,'Create Account →');
 }
 
-async function doLogout() {
-  await auth.signOut();
+async function doLogout() { await auth.signOut(); }
+
+function friendlyErr(code) {
+  return ({
+    'auth/user-not-found':       'No account found with that email.',
+    'auth/wrong-password':       'Incorrect password.',
+    'auth/invalid-credential':   'Email or password is incorrect.',
+    'auth/email-already-in-use': 'That email is already registered — try signing in.',
+    'auth/invalid-email':        'Please enter a valid email address.',
+    'auth/weak-password':        'Password must be at least 6 characters.',
+    'auth/too-many-requests':    'Too many attempts — please wait a moment.',
+  }[code]) || 'Something went wrong. Please try again.';
 }
 
-function friendlyError(code) {
-  const map = {
-    'auth/user-not-found':     'No account found with that email.',
-    'auth/wrong-password':     'Incorrect password.',
-    'auth/email-already-in-use': 'That email is already registered. Try signing in.',
-    'auth/invalid-email':      'Please enter a valid email address.',
-    'auth/weak-password':      'Password must be at least 6 characters.',
-    'auth/too-many-requests':  'Too many attempts. Please wait a moment and try again.',
-    'auth/invalid-credential': 'Email or password is incorrect.',
-  };
-  return map[code] || 'Something went wrong. Please try again.';
-}
-
-// ── Auth state listener — drives the whole app ────────────────
 auth.onAuthStateChanged(async user => {
   fadeOut('loading');
   if (user) {
     currentUser = user;
-    g('tb-user').textContent = user.displayName || user.email;
+    g('tb-user').textContent = user.displayName||user.email;
     g('view-auth').classList.add('hide');
     g('view-app').classList.add('show');
     await refreshCases();
     renderDashboard();
     showPg('dash');
   } else {
-    currentUser = null; allCases = [];
+    currentUser=null; allCases=[];
     g('view-auth').classList.remove('hide');
     g('view-app').classList.remove('show');
   }
 });
 
-// ════════════════════════════════════════════════════════════════
-// FIRESTORE CRUD
-// ════════════════════════════════════════════════════════════════
+// ── Firestore ─────────────────────────────────────────────────
 async function refreshCases() {
   if (!currentUser) return;
-  const snap = await db.collection('cases')
-    .where('userId', '==', currentUser.uid)
-    .get();
-  allCases = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  allCases.sort((a, b) => new Date(b.date) - new Date(a.date));
+  const snap = await db.collection('cases').where('userId','==',currentUser.uid).get();
+  allCases = snap.docs.map(doc=>({id:doc.id,...doc.data()}));
+  allCases.sort((a,b)=>new Date(b.date)-new Date(a.date));
 }
 
 async function saveCase(data) {
   await db.collection('cases').add({
-    userId:     currentUser.uid,
-    date:       data.date,
-    procedure:  data.procedure,
-    caseType:   data.caseType,
-    categories: data.categories,
-    notes:      data.notes,
-    createdAt:  firebase.firestore.FieldValue.serverTimestamp(),
+    userId:    currentUser.uid,
+    date:      data.date,
+    procedure: data.procedure,
+    caseType:  data.caseType,
+    categories:data.categories,
+    notes:     data.notes,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   });
 }
 
@@ -580,52 +517,46 @@ async function removeCase(id) {
   await db.collection('cases').doc(id).delete();
 }
 
-// ════════════════════════════════════════════════════════════════
-// NAVIGATION
-// ════════════════════════════════════════════════════════════════
+// ── Navigation ────────────────────────────────────────────────
 function showPg(pg) {
-  document.querySelectorAll('.pg').forEach(p => p.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   g(`pg-${pg}`).classList.add('on');
-  ['dash','add','log'].forEach((p,i) =>
-    document.querySelectorAll('.nb')[i].classList.toggle('on', p === pg));
-  if (pg === 'dash') renderDashboard();
-  if (pg === 'log')  renderLog();
+  ['dash','add','log'].forEach((p,i)=>
+    document.querySelectorAll('.nb')[i].classList.toggle('on',p===pg));
+  if (pg==='dash') renderDashboard();
+  if (pg==='log')  renderLog();
 }
 
-// ════════════════════════════════════════════════════════════════
-// DASHBOARD
-// ════════════════════════════════════════════════════════════════
+// ── Dashboard ─────────────────────────────────────────────────
 function calcStats() {
-  const cc = {}; CATS.forEach(c => cc[c.id] = 0);
-  let cran = 0, spine = 0;
-  allCases.forEach(c => {
-    if (c.caseType === 'craniotomy') cran++;
-    else if (c.caseType === 'spine') spine++;
-    (c.categories || []).forEach(id => { if (cc[id] !== undefined) cc[id]++; });
+  const cc={}; CATS.forEach(c=>cc[c.id]=0);
+  let cran=0,spine=0;
+  allCases.forEach(c=>{
+    if (c.caseType==='craniotomy') cran++;
+    else if (c.caseType==='spine') spine++;
+    (c.categories||[]).forEach(id=>{ if(cc[id]!==undefined) cc[id]++; });
   });
-  return { cran, spine, cc };
+  return {cran,spine,cc};
 }
 
 function renderDashboard() {
-  const { cran, spine, cc } = calcStats();
-  const today = new Date().toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
-  g('dsub').textContent = `${currentUser?.displayName || currentUser?.email || ''} · ${allCases.length} procedures · ${today}`;
-  g('nc').textContent = cran;
-  g('ns').textContent = spine;
-  g('bc').style.width = pct(cran, 50) + '%';
-  g('bs').style.width = pct(spine, 30) + '%';
+  const {cran,spine,cc}=calcStats();
+  const today=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
+  g('dsub').textContent=`${currentUser?.displayName||currentUser?.email||''} · ${allCases.length} procedures · ${today}`;
+  g('nc').textContent=cran; g('ns').textContent=spine;
+  g('bc').style.width=pct(cran,50)+'%';
+  g('bs').style.width=pct(spine,30)+'%';
 
-  const grid = g('cat-grid');
-  grid.innerHTML = '';
-  CATS.filter(c => c.req !== null).forEach(cat => {
-    const n = cc[cat.id] || 0, r = cat.req, p = pct(n, r);
-    const met = n >= r, none = n === 0;
-    const bc  = met ? 'bm' : none ? 'bn' : 'bp';
-    const fc  = met ? 'var(--grn)' : none ? 'var(--red)' : 'var(--amb)';
-    const el  = document.createElement('div');
-    el.className = 'cc'; el.onclick = () => showCatModal(cat, n);
-    el.innerHTML = `
+  const grid=g('cat-grid'); grid.innerHTML='';
+  CATS.filter(c=>c.req!==null).forEach(cat=>{
+    const n=cc[cat.id]||0,r=cat.req,p=pct(n,r);
+    const met=n>=r,none=n===0;
+    const bc=met?'bm':none?'bn':'bp';
+    const fc=met?'var(--grn)':none?'var(--red)':'var(--amb)';
+    const el=document.createElement('div');
+    el.className='cc'; el.onclick=()=>showCatModal(cat,n);
+    el.innerHTML=`
       <div class="cc-top">
         <div class="cc-rom">${cat.id}</div>
         <div class="cc-name">${cat.lbl}</div>
@@ -633,91 +564,105 @@ function renderDashboard() {
       </div>
       <div class="cc-bot">
         <div class="cc-bar"><div class="cc-fill" style="width:${p}%;background:${fc}"></div></div>
-        <div class="cc-badge ${bc}">${met ? '✓ ' : ''}${n} / ${r}</div>
+        <div class="cc-badge ${bc}">${met?'✓ ':''}${n} / ${r}</div>
       </div>`;
     grid.appendChild(el);
   });
 }
 
-// ════════════════════════════════════════════════════════════════
-// ADD CASE
-// ════════════════════════════════════════════════════════════════
+// ── Add Case ──────────────────────────────────────────────────
 function setType(t) {
-  selType = t;
-  ['craniotomy','spine','other'].forEach(x =>
-    g(`tt-${x}`).classList.toggle('on', x === t));
+  selType=t;
+  ['craniotomy','spine','other'].forEach(x=>g(`tt-${x}`).classList.toggle('on',x===t));
 }
 
 function buildCatCheckboxes() {
-  const c = g('csg'); if (!c) return;
-  c.innerHTML = ''; selCats = new Set();
-  CATS.forEach(cat => {
-    const d = document.createElement('div');
-    d.className = 'co'; d.id = `co-${cat.id}`;
-    d.innerHTML = `<input type="checkbox" id="chk-${cat.id}" onchange="togCat('${cat.id}')">
-      <div class="co-lbl"><strong>${cat.id}. ${cat.lbl}</strong>${cat.desc}</div>`;
-    d.onclick = e => { if (e.target.tagName !== 'INPUT') { const chk = g(`chk-${cat.id}`); chk.checked = !chk.checked; togCat(cat.id); } };
-    c.appendChild(d);
+  const container=g('csg'); if (!container) return;
+  container.innerHTML=''; selCats=new Set();
+
+  CATS.forEach(cat=>{
+    // Row wrapper
+    const row=document.createElement('div');
+    row.className='co';
+    row.id=`co-${cat.id}`;
+
+    // Checkbox input
+    const chk=document.createElement('input');
+    chk.type='checkbox';
+    chk.className='co-chk';
+    chk.id=`chk-${cat.id}`;
+    chk.addEventListener('change',()=>togCat(cat.id));
+
+    // Text container
+    const textWrap=document.createElement('div');
+    textWrap.className='co-text';
+
+    const titleEl=document.createElement('span');
+    titleEl.className='co-title';
+    titleEl.textContent=`${cat.id}.  ${cat.lbl}`;
+
+    const descEl=document.createElement('span');
+    descEl.className='co-desc-text';
+    descEl.textContent=cat.desc;
+
+    textWrap.appendChild(titleEl);
+    textWrap.appendChild(descEl);
+    row.appendChild(chk);
+    row.appendChild(textWrap);
+
+    // Click anywhere on row toggles checkbox
+    row.addEventListener('click',e=>{
+      if (e.target!==chk) { chk.checked=!chk.checked; togCat(cat.id); }
+    });
+
+    container.appendChild(row);
   });
 }
 
 function togCat(id) {
-  const chk = g(`chk-${id}`);
-  g(`co-${id}`).classList.toggle('on', chk.checked);
-  chk.checked ? selCats.add(id) : selCats.delete(id);
+  const chk=g(`chk-${id}`);
+  g(`co-${id}`).classList.toggle('on',chk.checked);
+  chk.checked?selCats.add(id):selCats.delete(id);
 }
 
 async function submitCase() {
-  const proc  = g('np').value.trim();
-  const date  = g('nd').value;
-  const notes = g('nn').value.trim();
-  const okEl  = g('msg-ok'), erEl = g('msg-er');
-  okEl.style.display = erEl.style.display = 'none';
-  if (!proc) { erEl.textContent = 'Please enter a procedure name.'; erEl.style.display = 'block'; return; }
-  if (!date) { erEl.textContent = 'Please select the date.';        erEl.style.display = 'block'; return; }
-
-  setBtn('btn-save', true, 'Saving…');
+  const proc=g('np').value.trim(), date=g('nd').value, notes=g('nn').value.trim();
+  const okEl=g('msg-ok'), erEl=g('msg-er');
+  okEl.style.display=erEl.style.display='none';
+  if (!proc){erEl.textContent='Please enter a procedure name.';erEl.style.display='block';return;}
+  if (!date){erEl.textContent='Please select the date.';erEl.style.display='block';return;}
+  setBtn('btn-save',true,'Saving…');
   try {
-    await saveCase({ procedure: proc, date, caseType: selType, categories: [...selCats], notes });
+    await saveCase({procedure:proc,date,caseType:selType,categories:[...selCats],notes});
     await refreshCases();
-    g('np').value = ''; g('nn').value = '';
-    g('nd').value = new Date().toISOString().split('T')[0];
+    g('np').value=''; g('nn').value='';
+    g('nd').value=new Date().toISOString().split('T')[0];
     setType('craniotomy'); buildCatCheckboxes();
-    okEl.style.display = 'block';
-    setTimeout(() => okEl.style.display = 'none', 3500);
+    okEl.style.display='block';
+    setTimeout(()=>okEl.style.display='none',3500);
     renderDashboard();
-  } catch(e) {
-    erEl.textContent = 'Could not save: ' + e.message;
-    erEl.style.display = 'block';
-  }
-  setBtn('btn-save', false, 'Save Case →');
+  } catch(e){erEl.textContent='Could not save: '+e.message;erEl.style.display='block';}
+  setBtn('btn-save',false,'Save Case →');
 }
 
-// ════════════════════════════════════════════════════════════════
-// CASE LOG
-// ════════════════════════════════════════════════════════════════
+// ── Case Log ──────────────────────────────────────────────────
 function renderLog() {
-  const search = (g('lsearch')?.value || '').toLowerCase();
-  const fcat   =  g('lcat')?.value   || '';
-  const ftype  =  g('ltype')?.value  || '';
-  g('lsub').textContent = `${currentUser?.displayName || ''} · ${allCases.length} procedures`;
-
-  const rows = allCases.filter(c =>
-    (!search || c.procedure.toLowerCase().includes(search) || (c.notes||'').toLowerCase().includes(search)) &&
-    (!fcat  || (c.categories||[]).includes(fcat)) &&
-    (!ftype || c.caseType === ftype)
-  );
-
-  const tbody = g('ctbody');
-  if (!rows.length) { tbody.innerHTML = `<tr><td colspan="5"><div class="no-cases">No cases found</div></td></tr>`; return; }
-  tbody.innerHTML = rows.map(c => {
-    const ds   = c.date ? fmtDate(c.date) : '—';
-    const cats = (c.categories||[]).map(id => `<span class="cpill">${id}</span>`).join('');
-    const note = c.notes ? `<div class="cnote">${esc(c.notes).substring(0,90)}${c.notes.length>90?'…':''}</div>` : '';
+  const search=(g('lsearch')?.value||'').toLowerCase();
+  const fcat=g('lcat')?.value||'', ftype=g('ltype')?.value||'';
+  g('lsub').textContent=`${currentUser?.displayName||''} · ${allCases.length} procedures`;
+  const rows=allCases.filter(c=>
+    (!search||c.procedure.toLowerCase().includes(search)||(c.notes||'').toLowerCase().includes(search))&&
+    (!fcat||(c.categories||[]).includes(fcat))&&(!ftype||c.caseType===ftype));
+  const tbody=g('ctbody');
+  if (!rows.length){tbody.innerHTML=`<tr><td colspan="5"><div class="no-cases">No cases found</div></td></tr>`;return;}
+  tbody.innerHTML=rows.map(c=>{
+    const ds=c.date?fmtDate(c.date):'—';
+    const cats=(c.categories||[]).map(id=>`<span class="cpill">${id}</span>`).join('');
+    const note=c.notes?`<div class="cnote">${esc(c.notes).substring(0,90)}${c.notes.length>90?'…':''}</div>`:'';
     return `<tr>
       <td style="white-space:nowrap;color:var(--txt2);font-size:12px">${ds}</td>
       <td><strong style="font-size:13px">${esc(c.procedure)}</strong>${note}</td>
-      <td>${cats || '<span style="color:var(--txt4);font-size:11px">—</span>'}</td>
+      <td>${cats||'<span style="color:var(--txt4);font-size:11px">—</span>'}</td>
       <td style="font-size:11px;color:var(--txt4);text-transform:capitalize">${c.caseType}</td>
       <td><button class="btn-del" onclick="delCase('${c.id}')">✕</button></td>
     </tr>`;
@@ -726,81 +671,64 @@ function renderLog() {
 
 async function delCase(id) {
   if (!confirm('Remove this case from your logbook?')) return;
-  try { await removeCase(id); await refreshCases(); renderLog(); renderDashboard(); }
-  catch(e) { alert('Could not delete: ' + e.message); }
+  try{await removeCase(id);await refreshCases();renderLog();renderDashboard();}
+  catch(e){alert('Could not delete: '+e.message);}
 }
 
-// ════════════════════════════════════════════════════════════════
-// IMPORT / EXPORT
-// ════════════════════════════════════════════════════════════════
+// ── Import / Export ───────────────────────────────────────────
 function exportJSON() {
-  const data = JSON.stringify(allCases.map(({id, userId, createdAt, ...rest}) => rest), null, 2);
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([data], {type:'application/json'}));
-  a.download = `icpnt-cases-${new Date().toISOString().split('T')[0]}.json`;
+  const data=JSON.stringify(allCases.map(({id,userId,createdAt,...rest})=>rest),null,2);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
+  a.download=`icpnt-cases-${new Date().toISOString().split('T')[0]}.json`;
   a.click();
 }
 
 async function importJSON(event) {
-  const file = event.target.files[0]; if (!file) return;
+  const file=event.target.files[0]; if (!file) return;
   try {
-    const cases = JSON.parse(await file.text());
+    const cases=JSON.parse(await file.text());
     if (!Array.isArray(cases)) throw new Error('File must contain an array of cases.');
-    if (!confirm(`Import ${cases.length} cases into your Firebase logbook?`)) return;
-    const label = event.target.closest('label');
-    const orig  = label.childNodes[0].textContent;
-    label.childNodes[0].textContent = 'Importing…';
-    let n = 0;
-    for (const c of cases) {
-      if (!c.procedure || !c.date) continue;
-      await saveCase({ procedure:c.procedure, date:c.date, caseType:c.caseType||'craniotomy', categories:c.categories||[], notes:c.notes||'' });
+    if (!confirm(`Import ${cases.length} cases into your logbook?`)) return;
+    const lbl=event.target.closest('label'), orig=lbl.childNodes[0].textContent;
+    lbl.childNodes[0].textContent='Importing…';
+    let n=0;
+    for (const c of cases){
+      if (!c.procedure||!c.date) continue;
+      await saveCase({procedure:c.procedure,date:c.date,caseType:c.caseType||'craniotomy',categories:c.categories||[],notes:c.notes||''});
       n++;
     }
     await refreshCases(); renderDashboard(); renderLog();
     alert(`✓ Imported ${n} cases.`);
-    label.childNodes[0].textContent = orig;
-  } catch(e) { alert('Import failed: ' + e.message); }
-  event.target.value = '';
+    lbl.childNodes[0].textContent=orig;
+  } catch(e){alert('Import failed: '+e.message);}
+  event.target.value='';
 }
 
-// ════════════════════════════════════════════════════════════════
-// MODAL
-// ════════════════════════════════════════════════════════════════
-function showCatModal(cat, count) {
-  const catCases = allCases.filter(c => (c.categories||[]).includes(cat.id));
-  const req  = cat.req;
-  const stxt = req ? (count >= req ? `✓ Requirement met (${count}/${req})` : `${count} of ${req} — ${req-count} still needed`) : `${count} documented`;
-  const scol = !req ? 'var(--blue)' : count >= req ? 'var(--grn)' : count === 0 ? 'var(--red)' : 'var(--amb)';
-  g('mo-title').textContent = `${cat.id}. ${cat.lbl}`;
-  let html = `<div style="margin-bottom:14px;padding:10px 12px;border-radius:6px;background:var(--off);border:1px solid var(--bdr)">
+// ── Modal ─────────────────────────────────────────────────────
+function showCatModal(cat,count) {
+  const catCases=allCases.filter(c=>(c.categories||[]).includes(cat.id));
+  const req=cat.req;
+  const stxt=req?(count>=req?`✓ Requirement met (${count}/${req})`:`${count} of ${req} — ${req-count} still needed`):`${count} documented`;
+  const scol=!req?'var(--blue)':count>=req?'var(--grn)':count===0?'var(--red)':'var(--amb)';
+  g('mo-title').textContent=`${cat.id}. ${cat.lbl}`;
+  let html=`<div style="margin-bottom:14px;padding:10px 12px;border-radius:6px;background:var(--off);border:1px solid var(--bdr)">
     <div style="font-size:11px;color:var(--txt2);margin-bottom:3px">${cat.desc}</div>
     <div style="font-size:13px;font-weight:600;color:${scol}">${stxt}</div></div>`;
-  html += catCases.length
-    ? catCases.map(c => `<div class="dr"><div class="dl">${c.date ? fmtDate(c.date) : '—'}</div>
-        <div class="dv"><div style="font-weight:500">${esc(c.procedure)}</div>
-        ${c.notes ? `<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.35">${esc(c.notes)}</div>` : ''}</div></div>`).join('')
-    : `<div style="text-align:center;padding:20px;color:var(--txt3);font-size:13px">No cases in this category yet.</div>`;
-  g('mo-body').innerHTML = html;
+  html+=catCases.length
+    ?catCases.map(c=>`<div class="dr"><div class="dl">${c.date?fmtDate(c.date):'—'}</div>
+      <div class="dv"><div style="font-weight:500">${esc(c.procedure)}</div>
+      ${c.notes?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.35">${esc(c.notes)}</div>`:''}</div></div>`).join('')
+    :`<div style="text-align:center;padding:20px;color:var(--txt3);font-size:13px">No cases in this category yet.</div>`;
+  g('mo-body').innerHTML=html;
   g('mov').classList.add('on');
 }
-function closeMo(e) { if (!e || e.target === g('mov')) g('mov').classList.remove('on'); }
-
-// ════════════════════════════════════════════════════════════════
-// HELPERS
-// ════════════════════════════════════════════════════════════════
-const g       = id => document.getElementById(id);
-const pct     = (n, d) => Math.min(Math.round(n / d * 100), 100);
-const fmtDate = d => new Date(d + 'T12:00:00').toLocaleDateString('en-AU', {day:'numeric',month:'short',year:'numeric'});
-const esc     = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-const setBtn  = (id, dis, txt) => { const b = g(id); b.disabled = dis; b.textContent = txt; };
-const fadeOut = id => { const el = g(id); el.classList.add('out'); setTimeout(() => el.style.display = 'none', 520); };
+function closeMo(e){if(!e||e.target===g('mov'))g('mov').classList.remove('on');}
 
 // ── Init ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  g('nd').value = new Date().toISOString().split('T')[0];
+document.addEventListener('DOMContentLoaded',()=>{
+  g('nd').value=new Date().toISOString().split('T')[0];
   buildCatCheckboxes();
-  g('ld-msg').textContent = 'Connecting to Firebase…';
-  // onAuthStateChanged above handles the rest
 });
 </script>
 </body>
