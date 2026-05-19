@@ -26,7 +26,7 @@ body{min-height:100vh}
 button{cursor:pointer;border:none;font-family:inherit;font-size:inherit}
 input,textarea,select{font-family:inherit;font-size:inherit}
 
-/* Loading */
+/* ── Loading ── */
 #loading{position:fixed;inset:0;background:var(--navy);z-index:999;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   transition:opacity .5s ease}
@@ -38,7 +38,7 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ld-msg{font-size:12px;color:rgba(255,255,255,.4);margin-top:12px}
 
-/* Auth */
+/* ── Auth ── */
 #view-auth{min-height:100vh;display:flex;align-items:center;justify-content:center;
   background:linear-gradient(140deg,var(--navy) 0%,#1a4080 100%)}
 #view-auth.hide{display:none}
@@ -49,26 +49,34 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .auth-logo{font-family:var(--serif);font-size:40px;line-height:1;margin-bottom:4px}
 .auth-logo em{font-style:italic;color:var(--blue)}
 .auth-logo b{font-weight:700;color:var(--navy)}
-.auth-tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--txt4);margin-bottom:28px}
+.auth-tag{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--txt4);margin-bottom:28px}
 .tab-row{display:flex;border-bottom:2px solid var(--bdr);margin-bottom:24px}
 .tab-btn{flex:1;padding:10px;font-size:13px;font-weight:500;color:var(--txt4);
-  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;cursor:pointer;transition:.2s}
+  background:none;border:none;border-bottom:2px solid transparent;
+  margin-bottom:-2px;cursor:pointer;transition:.2s}
 .tab-btn.on{color:var(--blue);border-bottom-color:var(--blue)}
 .fld{margin-bottom:16px}
 .fld label{display:block;font-size:11px;font-weight:700;color:var(--txt2);
   text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
-.fld input{width:100%;padding:11px 13px;border:1.5px solid var(--bdr);border-radius:var(--r);
-  outline:none;background:var(--off);font-size:14px;color:var(--txt);transition:.2s}
+.fld input{width:100%;padding:11px 13px;border:1.5px solid var(--bdr);
+  border-radius:var(--r);outline:none;background:var(--off);
+  font-size:14px;color:var(--txt);transition:.2s}
 .fld input:focus{border-color:var(--blue);background:white}
-.btn-auth{width:100%;padding:13px;background:var(--blue);color:white;font-weight:600;
-  font-size:14px;border-radius:var(--r);transition:.2s;margin-top:4px;letter-spacing:.02em}
+.btn-auth{width:100%;padding:13px;background:var(--blue);color:white;
+  font-weight:600;font-size:14px;border-radius:var(--r);
+  transition:.2s;margin-top:4px;letter-spacing:.02em}
 .btn-auth:hover{background:var(--navy)}
 .btn-auth:disabled{opacity:.5;cursor:not-allowed}
 .auth-err{font-size:12px;color:var(--red);margin-top:8px;min-height:18px}
 .auth-ok{display:none;background:var(--grn-bg);color:var(--grn-tx);
   padding:10px 12px;border-radius:6px;margin-top:8px;font-size:12px}
+.auth-link{display:block;text-align:center;margin-top:12px;font-size:12px;
+  color:var(--txt3);background:none;border:none;cursor:pointer;
+  text-decoration:underline;width:100%}
+.auth-link:hover{color:var(--blue)}
 
-/* App */
+/* ── App ── */
 #view-app{display:none}
 #view-app.show{display:block}
 .topbar{background:var(--navy);height:56px;display:flex;align-items:center;
@@ -78,14 +86,15 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .tb-brand b{color:white;font-weight:700}
 .tb-label{font-size:12px;color:rgba(255,255,255,.3)}
 .tb-right{display:flex;align-items:center;gap:12px}
-.tb-user{font-size:12px;color:var(--sky);font-weight:500;max-width:220px;
-  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb-user{font-size:12px;color:var(--sky);font-weight:500;
+  max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .btn-out{font-size:11px;padding:5px 11px;border:1px solid rgba(255,255,255,.18);
   border-radius:4px;color:rgba(255,255,255,.55);background:none;transition:.2s}
 .btn-out:hover{color:white;border-color:rgba(255,255,255,.4)}
 .nav{background:white;border-bottom:1px solid var(--bdr);display:flex;padding:0 26px}
 .nb{padding:13px 16px;font-size:13px;font-weight:500;color:var(--txt3);
-  background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;transition:.2s}
+  background:none;border:none;border-bottom:2px solid transparent;
+  margin-bottom:-1px;transition:.2s}
 .nb:hover{color:var(--blue)}
 .nb.on{color:var(--blue);border-bottom-color:var(--blue)}
 .main{padding:26px;max-width:1100px;margin:0 auto;width:100%}
@@ -93,12 +102,14 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .pg.on{display:block;animation:fi .22s ease}
 @keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
-/* Dashboard */
+/* ── Dashboard ── */
 .pg-title{font-family:var(--serif);font-size:25px;font-weight:400;color:var(--navy);margin-bottom:4px}
 .pg-sub{font-size:13px;color:var(--txt2);margin-bottom:24px}
 .tot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
-.tot-card{background:white;border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh);border:1px solid var(--bdr)}
-.tot-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-bottom:8px}
+.tot-card{background:white;border-radius:var(--r);padding:20px 22px;
+  box-shadow:var(--sh);border:1px solid var(--bdr)}
+.tot-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txt3);margin-bottom:8px}
 .tot-num{font-family:var(--serif);font-size:46px;line-height:1}
 .tot-den{font-size:15px;color:var(--txt3);font-weight:400}
 .tot-bar{height:6px;background:var(--bdr);border-radius:3px;margin-top:10px;overflow:hidden}
@@ -122,9 +133,9 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .bp{background:var(--amb-bg);color:var(--amb-tx)}
 .bn{background:var(--red-bg);color:var(--red-tx)}
 
-/* Add Case form */
-.aform{background:white;border-radius:var(--r);padding:28px;box-shadow:var(--sh);
-  border:1px solid var(--bdr);max-width:720px}
+/* ── Add Case ── */
+.aform{background:white;border-radius:var(--r);padding:28px;
+  box-shadow:var(--sh);border:1px solid var(--bdr);max-width:720px}
 .fr2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .ff{margin-bottom:20px}
 .ff label{display:block;font-size:11px;font-weight:700;color:var(--txt2);
@@ -141,58 +152,23 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .tp:hover{border-color:var(--blue-m)}
 .tp.on{border-color:var(--blue);background:#EFF6FF;color:var(--blue)}
 
-/* ── Category checkboxes — 2 col, text fully contained ── */
-.csg{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:7px;
-}
-.co{
-  display:grid;
-  grid-template-columns:18px 1fr;
-  gap:8px;
-  align-items:start;
-  padding:10px 12px;
-  border:1.5px solid var(--bdr);
-  border-radius:6px;
-  cursor:pointer;
-  transition:border-color .15s,background .15s;
-  background:var(--off);
-  overflow:hidden;
-}
+/* ── Category checkboxes — 2 column, text fully contained ── */
+.csg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.co{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:start;
+  padding:10px 12px;border:1.5px solid var(--bdr);border-radius:6px;
+  cursor:pointer;transition:border-color .15s,background .15s;
+  background:var(--off);overflow:hidden}
 .co:hover{border-color:var(--blue-m);background:white}
 .co.on{border-color:var(--blue);background:#EFF6FF}
-.co-chk{
-  display:block;
-  width:15px;height:15px;
-  margin-top:2px;
-  flex-shrink:0;
-  accent-color:var(--blue);
-  cursor:pointer;
-}
-.co-text{
-  display:block;
-  overflow:hidden;
-  min-width:0;
-}
-.co-title{
-  display:block;
-  font-size:12px;
-  font-weight:600;
-  color:var(--navy);
-  line-height:1.3;
-  margin-bottom:2px;
-  overflow-wrap:break-word;
-  word-break:break-word;
-}
-.co-desc-text{
-  display:block;
-  font-size:10.5px;
-  color:var(--txt2);
-  line-height:1.4;
-  overflow-wrap:break-word;
-  word-break:break-word;
-}
+.co-chk{display:block;width:15px;height:15px;margin-top:2px;
+  accent-color:var(--blue);cursor:pointer;flex-shrink:0}
+.co-text{display:block;overflow:hidden;min-width:0}
+.co-title{display:block;font-size:12px;font-weight:600;color:var(--navy);
+  line-height:1.3;margin-bottom:2px;overflow-wrap:break-word;word-break:break-word}
+.co-desc-text{display:block;font-size:10.5px;color:var(--txt2);
+  line-height:1.4;overflow-wrap:break-word;word-break:break-word}
+.cat-empty{font-size:13px;color:var(--txt3);padding:12px 0;
+  grid-column:1/-1;text-align:center}
 
 .btn-save{padding:12px 28px;background:var(--blue);color:white;font-weight:600;
   font-size:13px;border-radius:var(--r);transition:.2s}
@@ -203,7 +179,7 @@ input,textarea,select{font-family:inherit;font-size:inherit}
 .msg-er{display:none;background:var(--red-bg);color:var(--red-tx);
   padding:10px 14px;border-radius:var(--r);margin-top:14px;font-size:13px}
 
-/* Case Log */
+/* ── Case Log ── */
 .log-tools{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
 .l-search{flex:1;min-width:180px;padding:8px 12px;border:1.5px solid var(--bdr);
   border-radius:var(--r);background:white;font-size:13px;outline:none}
@@ -228,14 +204,16 @@ input,textarea,select{font-family:inherit;font-size:inherit}
   border:1px solid var(--red-bg);border-radius:4px;transition:.2s}
 .btn-del:hover{background:var(--red-bg)}
 
-/* Modal */
+/* ── Modal ── */
 .mov{display:none;position:fixed;inset:0;background:rgba(10,31,68,.5);
   z-index:200;align-items:center;justify-content:center}
 .mov.on{display:flex}
-.mo{background:white;border-radius:12px;padding:28px;max-width:540px;width:92%;
-  max-height:82vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.mo{background:white;border-radius:12px;padding:28px;max-width:540px;
+  width:92%;max-height:82vh;overflow-y:auto;
+  box-shadow:0 24px 80px rgba(0,0,0,.3)}
 .mo-title{font-family:var(--serif);font-size:19px;color:var(--navy);margin-bottom:14px}
-.mo-close{float:right;background:none;border:none;font-size:20px;color:var(--txt3);cursor:pointer}
+.mo-close{float:right;background:none;border:none;font-size:20px;
+  color:var(--txt3);cursor:pointer}
 .mo-close:hover{color:var(--navy)}
 .dr{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--bdr)}
 .dr:last-child{border-bottom:none}
@@ -267,10 +245,13 @@ input,textarea,select{font-family:inherit;font-size:inherit}
   <div class="auth-card">
     <div class="auth-logo"><em>Brain</em><b>School</b></div>
     <div class="auth-tag">ICPNT Case Tracker</div>
+
     <div class="tab-row">
       <button class="tab-btn on" id="tab-in" onclick="setTab('in')">Sign In</button>
       <button class="tab-btn"    id="tab-up" onclick="setTab('up')">Register</button>
     </div>
+
+    <!-- Sign In -->
     <div id="pane-in">
       <div class="fld"><label>Email</label>
         <input id="in-email" type="email" placeholder="your@email.com" autocomplete="email"
@@ -280,7 +261,10 @@ input,textarea,select{font-family:inherit;font-size:inherit}
                onkeydown="if(event.key==='Enter')doLogin()"></div>
       <div class="auth-err" id="in-err"></div>
       <button class="btn-auth" id="btn-in" onclick="doLogin()">Sign In →</button>
+      <button class="auth-link" onclick="setTab('reset')">Forgot password?</button>
     </div>
+
+    <!-- Register -->
     <div id="pane-up" style="display:none">
       <div class="fld"><label>Full Name</label>
         <input id="up-name" type="text" placeholder="Dr Jane Smith"></div>
@@ -292,6 +276,21 @@ input,textarea,select{font-family:inherit;font-size:inherit}
       <div class="auth-ok"  id="up-ok">✓ Account created — please sign in.</div>
       <button class="btn-auth" id="btn-up" onclick="doRegister()">Create Account →</button>
     </div>
+
+    <!-- Forgot Password -->
+    <div id="pane-reset" style="display:none">
+      <p style="font-size:13px;color:var(--txt2);margin-bottom:16px;line-height:1.55">
+        Enter your email and we'll send you a link to reset your password.
+      </p>
+      <div class="fld"><label>Email</label>
+        <input id="reset-email" type="email" placeholder="your@email.com"
+               onkeydown="if(event.key==='Enter')doReset()"></div>
+      <div class="auth-err" id="reset-err"></div>
+      <div class="auth-ok"  id="reset-ok">✓ Reset email sent — check your inbox.</div>
+      <button class="btn-auth" id="btn-reset" onclick="doReset()">Send Reset Email →</button>
+      <button class="auth-link" onclick="setTab('in')">← Back to sign in</button>
+    </div>
+
   </div>
 </div>
 
@@ -321,12 +320,18 @@ input,textarea,select{font-family:inherit;font-size:inherit}
       <div class="tot-grid">
         <div class="tot-card">
           <div class="tot-lbl">Total Craniotomies</div>
-          <div><span class="tot-num" id="nc" style="color:var(--blue)">—</span><span class="tot-den"> / 50</span></div>
+          <div>
+            <span class="tot-num" id="nc" style="color:var(--blue)">—</span>
+            <span class="tot-den"> / 50</span>
+          </div>
           <div class="tot-bar"><div class="tot-fill" id="bc" style="width:0%;background:var(--blue)"></div></div>
         </div>
         <div class="tot-card">
           <div class="tot-lbl">Total Spine Surgeries</div>
-          <div><span class="tot-num" id="ns" style="color:var(--blue-l)">—</span><span class="tot-den"> / 30</span></div>
+          <div>
+            <span class="tot-num" id="ns" style="color:var(--blue-l)">—</span>
+            <span class="tot-den"> / 30</span>
+          </div>
           <div class="tot-bar"><div class="tot-fill" id="bs" style="width:0%;background:var(--blue-l)"></div></div>
         </div>
       </div>
@@ -345,6 +350,7 @@ input,textarea,select{font-family:inherit;font-size:inherit}
           <div class="ff"><label>Date of Procedure</label>
             <input id="nd" type="date"></div>
         </div>
+
         <div class="ff"><label>Case Type</label>
           <div class="type-row">
             <div class="tp on" id="tt-craniotomy" onclick="setType('craniotomy')">🧠 Craniotomy</div>
@@ -352,9 +358,12 @@ input,textarea,select{font-family:inherit;font-size:inherit}
             <div class="tp"    id="tt-other"      onclick="setType('other')">📋 Other</div>
           </div>
         </div>
-        <div class="ff"><label>ICPNT Category (tick all that apply)</label>
+
+        <div class="ff">
+          <label>ICPNT Category <span id="cat-type-label" style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--txt3);font-size:11px">— Craniotomy categories shown</span></label>
           <div class="csg" id="csg"></div>
         </div>
+
         <div class="ff"><label>Case Notes</label>
           <textarea id="nn" placeholder="Patient details, anaesthetic considerations, key learning points…"></textarea>
         </div>
@@ -383,6 +392,7 @@ input,textarea,select{font-family:inherit;font-size:inherit}
           <option value="ix">ix — IONM Observation</option>
           <option value="general_craniotomy">Other Craniotomy</option>
           <option value="general_spine">Other Spine</option>
+          <option value="other_neuro">Other Neurosurgical Procedure</option>
         </select>
         <select class="l-sel" id="ltype" onchange="renderLog()">
           <option value="">All Types</option>
@@ -428,20 +438,91 @@ firebase.initializeApp({
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-// ── Categories ────────────────────────────────────────────────
+// ── ICPNT Categories
+// Each category has a `types` array — only shown when that case type is selected.
+// `prefix` is shown before the label in the checkbox (roman numeral or blank).
+// ─────────────────────────────────────────────────────────────
 const CATS = [
-  {id:'i',                 lbl:'Awake Craniotomy & DBS',         desc:'Speech, motor & sensory mapping; max 2 DBS',                 req:5},
-  {id:'ii',                lbl:'Seizure Focus / Epilepsy',        desc:'Grid placement or seizure focus excision',                    req:5},
-  {id:'iii',               lbl:'Intracranial Vascular',            desc:'Aneurysm, AVM, stroke revascularisation',                     req:10},
-  {id:'iv',                lbl:'Craniotomy for Tumour',            desc:'Intra & extraaxial, supra & infratentorial',                  req:10},
-  {id:'v',                 lbl:'Emergency / Trauma',               desc:'Intracranial or spinal emergencies',                          req:5},
-  {id:'vi',                lbl:'Spinal Cord — Tumour/Vascular',    desc:'Intramedullary tumour or spinal vascular',                    req:5},
-  {id:'vii',               lbl:'Structural Spine Surgery',         desc:'Cervical, thoracic & lumbar instrumentation',                 req:25},
-  {id:'viii',              lbl:'CSF Shunt Procedures',             desc:'VP/VA shunt, EVD, endoscopic ventriculostomy',                req:5},
-  {id:'ix',                lbl:'IONM Observation',                 desc:'Interaction with neurologist or certified IONM professional', req:null},
-  {id:'general_craniotomy',lbl:'Other Craniotomy',                 desc:'Counts toward craniotomy total only',                         req:null},
-  {id:'general_spine',     lbl:'Other Spine',                      desc:'Counts toward spine total only',                              req:null},
+  {
+    id:'i', prefix:'i.',
+    lbl:'Awake Craniotomy & DBS',
+    desc:'Speech, motor & sensory mapping; max 2 DBS',
+    req:5, types:['craniotomy']
+  },
+  {
+    id:'ii', prefix:'ii.',
+    lbl:'Seizure Focus / Epilepsy',
+    desc:'Grid placement or seizure focus excision',
+    req:5, types:['craniotomy']
+  },
+  {
+    id:'iii', prefix:'iii.',
+    lbl:'Intracranial Vascular',
+    desc:'Aneurysm, AVM, stroke revascularisation',
+    req:10, types:['craniotomy']
+  },
+  {
+    id:'iv', prefix:'iv.',
+    lbl:'Craniotomy for Tumour',
+    desc:'Intra & extraaxial, supra & infratentorial',
+    req:10, types:['craniotomy']
+  },
+  {
+    id:'v', prefix:'v.',
+    lbl:'Emergency / Trauma',
+    desc:'Intracranial or spinal emergencies',
+    req:5, types:['craniotomy','spine']
+  },
+  {
+    id:'vi', prefix:'vi.',
+    lbl:'Spinal Cord — Tumour/Vascular',
+    desc:'Intramedullary tumour or spinal vascular',
+    req:5, types:['spine']
+  },
+  {
+    id:'vii', prefix:'vii.',
+    lbl:'Structural Spine Surgery',
+    desc:'Cervical, thoracic & lumbar instrumentation',
+    req:25, types:['spine']
+  },
+  {
+    id:'viii', prefix:'viii.',
+    lbl:'CSF Shunt Procedures',
+    desc:'VP/VA shunt, EVD, endoscopic ventriculostomy',
+    req:5, types:['craniotomy']
+  },
+  {
+    id:'ix', prefix:'ix.',
+    lbl:'IONM Observation',
+    desc:'Interaction with neurologist or certified IONM professional',
+    req:null, types:['craniotomy','spine','other']
+  },
+  {
+    id:'general_craniotomy', prefix:'',
+    lbl:'Other Craniotomy',
+    desc:'Craniotomy case — counts toward craniotomy total only',
+    req:null, types:['craniotomy']
+  },
+  {
+    id:'general_spine', prefix:'',
+    lbl:'Other Spine',
+    desc:'Spine case — counts toward spine total only',
+    req:null, types:['spine']
+  },
+  {
+    id:'other_neuro', prefix:'',
+    lbl:'Other Neurosurgical Procedure',
+    desc:'Neurosurgical procedure not covered by the above categories',
+    req:null, types:['other','craniotomy','spine']
+  },
 ];
+
+// Labels shown next to the case type heading
+const TYPE_LABELS = {
+  craniotomy: '— Craniotomy categories shown',
+  spine:      '— Spine categories shown',
+  other:      '— Other procedure categories shown',
+};
 
 // ── State ─────────────────────────────────────────────────────
 let currentUser=null, allCases=[], selType='craniotomy', selCats=new Set();
@@ -455,40 +536,58 @@ const setBtn  = (id,dis,txt) => { const b=g(id); b.disabled=dis; b.textContent=t
 const fadeOut = id => { const el=g(id); el.classList.add('out'); setTimeout(()=>el.style.display='none',520); };
 
 // ── Auth ──────────────────────────────────────────────────────
-function setTab(t){
-  g('tab-in').classList.toggle('on',t==='in');
-  g('tab-up').classList.toggle('on',t==='up');
-  g('pane-in').style.display=t==='in'?'block':'none';
-  g('pane-up').style.display=t==='up'?'block':'none';
+function setTab(t) {
+  // Tab buttons (only in/up have tabs)
+  g('tab-in').classList.toggle('on', t==='in');
+  g('tab-up').classList.toggle('on', t==='up');
+  // Panes
+  g('pane-in').style.display    = t==='in'    ? 'block' : 'none';
+  g('pane-up').style.display    = t==='up'    ? 'block' : 'none';
+  g('pane-reset').style.display = t==='reset' ? 'block' : 'none';
 }
 
-async function doLogin(){
+async function doLogin() {
   const email=g('in-email').value.trim(), pass=g('in-pass').value;
   const err=g('in-err'); err.textContent='';
   if(!email||!pass){err.textContent='Please enter your email and password.';return;}
   setBtn('btn-in',true,'Signing in…');
-  try{ await auth.signInWithEmailAndPassword(email,pass); }
-  catch(e){ err.textContent=friendlyErr(e.code); setBtn('btn-in',false,'Sign In →'); }
+  try { await auth.signInWithEmailAndPassword(email,pass); }
+  catch(e) { err.textContent=friendlyErr(e.code); setBtn('btn-in',false,'Sign In →'); }
 }
 
-async function doRegister(){
+async function doRegister() {
   const name=g('up-name').value.trim(), email=g('up-email').value.trim(), pass=g('up-pass').value;
   const err=g('up-err'), ok=g('up-ok'); err.textContent=''; ok.style.display='none';
   if(!name||!email||!pass){err.textContent='All fields are required.';return;}
   if(pass.length<6){err.textContent='Password must be at least 6 characters.';return;}
   setBtn('btn-up',true,'Creating account…');
-  try{
+  try {
     const cred=await auth.createUserWithEmailAndPassword(email,pass);
     await cred.user.updateProfile({displayName:name});
     ok.style.display='block';
     setTimeout(()=>setTab('in'),1800);
-  }catch(e){ err.textContent=friendlyErr(e.code); }
+  } catch(e) { err.textContent=friendlyErr(e.code); }
   setBtn('btn-up',false,'Create Account →');
 }
 
-async function doLogout(){ await auth.signOut(); }
+async function doReset() {
+  const email=g('reset-email').value.trim();
+  const err=g('reset-err'), ok=g('reset-ok'); err.textContent=''; ok.style.display='none';
+  if(!email){err.textContent='Please enter your email address.';return;}
+  setBtn('btn-reset',true,'Sending…');
+  try {
+    await auth.sendPasswordResetEmail(email);
+    ok.style.display='block';
+    g('reset-email').value='';
+  } catch(e) {
+    err.textContent=friendlyErr(e.code)||'Could not send reset email — check the address and try again.';
+  }
+  setBtn('btn-reset',false,'Send Reset Email →');
+}
 
-function friendlyErr(code){
+async function doLogout() { await auth.signOut(); }
+
+function friendlyErr(code) {
   return ({
     'auth/user-not-found':       'No account found with that email.',
     'auth/wrong-password':       'Incorrect password.',
@@ -497,12 +596,12 @@ function friendlyErr(code){
     'auth/invalid-email':        'Please enter a valid email address.',
     'auth/weak-password':        'Password must be at least 6 characters.',
     'auth/too-many-requests':    'Too many attempts — please wait a moment.',
-  }[code])||'Something went wrong. Please try again.';
+  }[code]) || 'Something went wrong. Please try again.';
 }
 
-auth.onAuthStateChanged(async user=>{
+auth.onAuthStateChanged(async user => {
   fadeOut('loading');
-  if(user){
+  if (user) {
     currentUser=user;
     g('tb-user').textContent=user.displayName||user.email;
     g('view-auth').classList.add('hide');
@@ -518,14 +617,14 @@ auth.onAuthStateChanged(async user=>{
 });
 
 // ── Firestore ─────────────────────────────────────────────────
-async function refreshCases(){
+async function refreshCases() {
   if(!currentUser) return;
   const snap=await db.collection('cases').where('userId','==',currentUser.uid).get();
   allCases=snap.docs.map(doc=>({id:doc.id,...doc.data()}));
   allCases.sort((a,b)=>new Date(b.date)-new Date(a.date));
 }
 
-async function saveCase(data){
+async function saveCase(data) {
   await db.collection('cases').add({
     userId:currentUser.uid, date:data.date, procedure:data.procedure,
     caseType:data.caseType, categories:data.categories, notes:data.notes,
@@ -533,22 +632,23 @@ async function saveCase(data){
   });
 }
 
-async function removeCase(id){ await db.collection('cases').doc(id).delete(); }
+async function removeCase(id) { await db.collection('cases').doc(id).delete(); }
 
 // ── Navigation ────────────────────────────────────────────────
-function showPg(pg){
+function showPg(pg) {
   document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   g(`pg-${pg}`).classList.add('on');
-  ['dash','add','log'].forEach((p,i)=>document.querySelectorAll('.nb')[i].classList.toggle('on',p===pg));
+  ['dash','add','log'].forEach((p,i)=>
+    document.querySelectorAll('.nb')[i].classList.toggle('on',p===pg));
   if(pg==='dash') renderDashboard();
   if(pg==='log')  renderLog();
 }
 
 // ── Dashboard ─────────────────────────────────────────────────
-function calcStats(){
+function calcStats() {
   const cc={}; CATS.forEach(c=>cc[c.id]=0);
-  let cran=0,spine=0;
+  let cran=0, spine=0;
   allCases.forEach(c=>{
     if(c.caseType==='craniotomy') cran++;
     else if(c.caseType==='spine') spine++;
@@ -557,24 +657,26 @@ function calcStats(){
   return {cran,spine,cc};
 }
 
-function renderDashboard(){
+function renderDashboard() {
   const {cran,spine,cc}=calcStats();
   const today=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'});
   g('dsub').textContent=`${currentUser?.displayName||currentUser?.email||''} · ${allCases.length} procedures · ${today}`;
   g('nc').textContent=cran; g('ns').textContent=spine;
   g('bc').style.width=pct(cran,50)+'%';
   g('bs').style.width=pct(spine,30)+'%';
+
   const grid=g('cat-grid'); grid.innerHTML='';
+  // Show only categories that have a requirement (req !== null)
   CATS.filter(c=>c.req!==null).forEach(cat=>{
-    const n=cc[cat.id]||0,r=cat.req,p=pct(n,r);
-    const met=n>=r,none=n===0;
+    const n=cc[cat.id]||0, r=cat.req, p=pct(n,r);
+    const met=n>=r, none=n===0;
     const bc=met?'bm':none?'bn':'bp';
     const fc=met?'var(--grn)':none?'var(--red)':'var(--amb)';
     const el=document.createElement('div');
     el.className='cc'; el.onclick=()=>showCatModal(cat,n);
     el.innerHTML=`
       <div class="cc-top">
-        <div class="cc-rom">${cat.id}</div>
+        <div class="cc-rom">${cat.prefix}</div>
         <div class="cc-name">${cat.lbl}</div>
         <div class="cc-desc">${cat.desc}</div>
       </div>
@@ -587,15 +689,32 @@ function renderDashboard(){
 }
 
 // ── Add Case ──────────────────────────────────────────────────
-function setType(t){
+function setType(t) {
   selType=t;
-  ['craniotomy','spine','other'].forEach(x=>g(`tt-${x}`).classList.toggle('on',x===t));
+  ['craniotomy','spine','other'].forEach(x=>
+    g(`tt-${x}`).classList.toggle('on',x===t));
+  // Update the helper label
+  g('cat-type-label').textContent = TYPE_LABELS[t] || '';
+  // Rebuild checkboxes filtered for this type
+  buildCatCheckboxes();
 }
 
-function buildCatCheckboxes(){
+function buildCatCheckboxes() {
   const container=g('csg'); if(!container) return;
   container.innerHTML=''; selCats=new Set();
-  CATS.forEach(cat=>{
+
+  // Only show categories relevant to the selected case type
+  const visible=CATS.filter(cat=>cat.types.includes(selType));
+
+  if(visible.length===0) {
+    const empty=document.createElement('div');
+    empty.className='cat-empty';
+    empty.textContent='No specific categories for this case type.';
+    container.appendChild(empty);
+    return;
+  }
+
+  visible.forEach(cat=>{
     const row=document.createElement('div');
     row.className='co'; row.id=`co-${cat.id}`;
 
@@ -608,7 +727,8 @@ function buildCatCheckboxes(){
 
     const title=document.createElement('span');
     title.className='co-title';
-    title.textContent=`${cat.id}.  ${cat.lbl}`;
+    // Show prefix (roman numeral) only if it exists
+    title.textContent=cat.prefix ? `${cat.prefix}  ${cat.lbl}` : cat.lbl;
 
     const desc=document.createElement('span');
     desc.className='co-desc-text';
@@ -626,45 +746,58 @@ function buildCatCheckboxes(){
   });
 }
 
-function togCat(id){
+function togCat(id) {
   const chk=g(`chk-${id}`);
   g(`co-${id}`).classList.toggle('on',chk.checked);
-  chk.checked?selCats.add(id):selCats.delete(id);
+  chk.checked ? selCats.add(id) : selCats.delete(id);
 }
 
-async function submitCase(){
+async function submitCase() {
   const proc=g('np').value.trim(), date=g('nd').value, notes=g('nn').value.trim();
   const okEl=g('msg-ok'), erEl=g('msg-er');
   okEl.style.display=erEl.style.display='none';
   if(!proc){erEl.textContent='Please enter a procedure name.';erEl.style.display='block';return;}
   if(!date){erEl.textContent='Please select the date.';erEl.style.display='block';return;}
   setBtn('btn-save',true,'Saving…');
-  try{
+  try {
     await saveCase({procedure:proc,date,caseType:selType,categories:[...selCats],notes});
     await refreshCases();
     g('np').value=''; g('nn').value='';
     g('nd').value=new Date().toISOString().split('T')[0];
-    setType('craniotomy'); buildCatCheckboxes();
+    setType('craniotomy');
     okEl.style.display='block';
     setTimeout(()=>okEl.style.display='none',3500);
     renderDashboard();
-  }catch(e){erEl.textContent='Could not save: '+e.message;erEl.style.display='block';}
+  } catch(e) {
+    erEl.textContent='Could not save: '+e.message;
+    erEl.style.display='block';
+  }
   setBtn('btn-save',false,'Save Case →');
 }
 
 // ── Case Log ──────────────────────────────────────────────────
-function renderLog(){
+function renderLog() {
   const search=(g('lsearch')?.value||'').toLowerCase();
   const fcat=g('lcat')?.value||'', ftype=g('ltype')?.value||'';
   g('lsub').textContent=`${currentUser?.displayName||''} · ${allCases.length} procedures`;
+
   const rows=allCases.filter(c=>
     (!search||c.procedure.toLowerCase().includes(search)||(c.notes||'').toLowerCase().includes(search))&&
-    (!fcat||(c.categories||[]).includes(fcat))&&(!ftype||c.caseType===ftype));
+    (!fcat||(c.categories||[]).includes(fcat))&&
+    (!ftype||c.caseType===ftype));
+
   const tbody=g('ctbody');
-  if(!rows.length){tbody.innerHTML=`<tr><td colspan="5"><div class="no-cases">No cases found</div></td></tr>`;return;}
+  if(!rows.length){
+    tbody.innerHTML=`<tr><td colspan="5"><div class="no-cases">No cases found</div></td></tr>`;
+    return;
+  }
   tbody.innerHTML=rows.map(c=>{
     const ds=c.date?fmtDate(c.date):'—';
-    const cats=(c.categories||[]).map(id=>`<span class="cpill">${id}</span>`).join('');
+    // Look up friendly label for each category id
+    const cats=(c.categories||[]).map(id=>{
+      const cat=CATS.find(x=>x.id===id);
+      return `<span class="cpill">${cat?cat.lbl:id}</span>`;
+    }).join('');
     const note=c.notes?`<div class="cnote">${esc(c.notes).substring(0,90)}${c.notes.length>90?'…':''}</div>`:'';
     return `<tr>
       <td style="white-space:nowrap;color:var(--txt2);font-size:12px">${ds}</td>
@@ -676,14 +809,14 @@ function renderLog(){
   }).join('');
 }
 
-async function delCase(id){
+async function delCase(id) {
   if(!confirm('Remove this case from your logbook?')) return;
-  try{await removeCase(id);await refreshCases();renderLog();renderDashboard();}
-  catch(e){alert('Could not delete: '+e.message);}
+  try { await removeCase(id); await refreshCases(); renderLog(); renderDashboard(); }
+  catch(e) { alert('Could not delete: '+e.message); }
 }
 
 // ── Import / Export ───────────────────────────────────────────
-function exportJSON(){
+function exportJSON() {
   const data=JSON.stringify(allCases.map(({id,userId,createdAt,...rest})=>rest),null,2);
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));
@@ -691,9 +824,9 @@ function exportJSON(){
   a.click();
 }
 
-async function importJSON(event){
+async function importJSON(event) {
   const file=event.target.files[0]; if(!file) return;
-  try{
+  try {
     const cases=JSON.parse(await file.text());
     if(!Array.isArray(cases)) throw new Error('File must contain an array of cases.');
     if(!confirm(`Import ${cases.length} cases into your logbook?`)) return;
@@ -702,40 +835,55 @@ async function importJSON(event){
     let n=0;
     for(const c of cases){
       if(!c.procedure||!c.date) continue;
-      await saveCase({procedure:c.procedure,date:c.date,caseType:c.caseType||'craniotomy',categories:c.categories||[],notes:c.notes||''});
+      await saveCase({
+        procedure:  c.procedure,
+        date:       c.date,
+        caseType:   c.caseType||'craniotomy',
+        categories: c.categories||[],
+        notes:      c.notes||'',
+      });
       n++;
     }
     await refreshCases(); renderDashboard(); renderLog();
     alert(`✓ Imported ${n} cases.`);
     lbl.childNodes[0].textContent=orig;
-  }catch(e){alert('Import failed: '+e.message);}
+  } catch(e) { alert('Import failed: '+e.message); }
   event.target.value='';
 }
 
 // ── Modal ─────────────────────────────────────────────────────
-function showCatModal(cat,count){
+function showCatModal(cat,count) {
   const catCases=allCases.filter(c=>(c.categories||[]).includes(cat.id));
   const req=cat.req;
-  const stxt=req?(count>=req?`✓ Requirement met (${count}/${req})`:`${count} of ${req} — ${req-count} still needed`):`${count} documented`;
+  const stxt=req
+    ?(count>=req?`✓ Requirement met (${count}/${req})`:`${count} of ${req} — ${req-count} still needed`)
+    :`${count} documented`;
   const scol=!req?'var(--blue)':count>=req?'var(--grn)':count===0?'var(--red)':'var(--amb)';
-  g('mo-title').textContent=`${cat.id}. ${cat.lbl}`;
-  let html=`<div style="margin-bottom:14px;padding:10px 12px;border-radius:6px;background:var(--off);border:1px solid var(--bdr)">
+  g('mo-title').textContent=cat.prefix?`${cat.prefix} ${cat.lbl}`:cat.lbl;
+  let html=`<div style="margin-bottom:14px;padding:10px 12px;border-radius:6px;
+    background:var(--off);border:1px solid var(--bdr)">
     <div style="font-size:11px;color:var(--txt2);margin-bottom:3px">${cat.desc}</div>
-    <div style="font-size:13px;font-weight:600;color:${scol}">${stxt}</div></div>`;
+    <div style="font-size:13px;font-weight:600;color:${scol}">${stxt}</div>
+  </div>`;
   html+=catCases.length
-    ?catCases.map(c=>`<div class="dr"><div class="dl">${c.date?fmtDate(c.date):'—'}</div>
-      <div class="dv"><div style="font-weight:500">${esc(c.procedure)}</div>
-      ${c.notes?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.35">${esc(c.notes)}</div>`:''}</div></div>`).join('')
+    ?catCases.map(c=>`
+      <div class="dr">
+        <div class="dl">${c.date?fmtDate(c.date):'—'}</div>
+        <div class="dv">
+          <div style="font-weight:500">${esc(c.procedure)}</div>
+          ${c.notes?`<div style="font-size:11px;color:var(--txt3);margin-top:2px;line-height:1.35">${esc(c.notes)}</div>`:''}
+        </div>
+      </div>`).join('')
     :`<div style="text-align:center;padding:20px;color:var(--txt3);font-size:13px">No cases in this category yet.</div>`;
   g('mo-body').innerHTML=html;
   g('mov').classList.add('on');
 }
-function closeMo(e){if(!e||e.target===g('mov'))g('mov').classList.remove('on');}
+function closeMo(e) { if(!e||e.target===g('mov')) g('mov').classList.remove('on'); }
 
 // ── Init ──────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   g('nd').value=new Date().toISOString().split('T')[0];
-  buildCatCheckboxes();
+  buildCatCheckboxes(); // builds with default selType = 'craniotomy'
 });
 </script>
 </body>
