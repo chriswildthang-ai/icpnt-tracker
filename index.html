@@ -167,12 +167,14 @@ input, textarea, select { font-family: inherit; font-size: inherit; }
 .csg       { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
 .co        { display: flex; align-items: flex-start; gap: 9px; padding: 10px 12px;
              border: 1.5px solid var(--bdr); border-radius: 6px; cursor: pointer;
-             transition: .2s; background: var(--off); }
+             transition: .2s; background: var(--off); min-width: 0; overflow: hidden; }
 .co:hover  { border-color: var(--blue-m); background: white; }
 .co.on     { border-color: var(--blue); background: #EFF6FF; }
 .co input  { margin-top: 2px; accent-color: var(--blue); flex-shrink: 0; }
-.co-lbl strong { display: block; font-size: 12px; color: var(--navy); margin-bottom: 1px; }
-.co-lbl    { font-size: 11px; color: var(--txt2); line-height: 1.35; }
+.co-lbl strong { display: block; font-size: 12px; color: var(--navy); margin-bottom: 1px;
+                 word-break: break-word; }
+.co-lbl    { font-size: 11px; color: var(--txt2); line-height: 1.35;
+             word-break: break-word; overflow-wrap: break-word; min-width: 0; }
 .btn-save  { padding: 12px 28px; background: var(--blue); color: white; font-weight: 600;
              font-size: 13px; border-radius: var(--r); transition: .2s; }
 .btn-save:hover { background: var(--navy); }
